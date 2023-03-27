@@ -38,7 +38,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-###setup
+### Setup
 If minimum node version of 18.15.0 is not installed, install with the below. 
 Install nvm: 
 ```bash
@@ -48,5 +48,6 @@ Install mimimum stable node version 18.15.0
 ```bash
 npm install 18.15.0
 ```
-npx prisma init --datasource-provider sqlite
-npx prisma migrate dev --name task
+#### Prisma server 
+```npx prisma init --datasource-provider sqlite```
+```npx prisma migrate dev --name away-tracker```
