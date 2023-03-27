@@ -1,91 +1,114 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+"use client";
+// import { Inter } from 'next/font/google'
+// import styles from './page.module.css'
 
-const inter = Inter({ subsets: ['latin'] })
+import { Provider } from 'react-redux';
+import store from './redux/store';
+import SprintBoard1 from './components/board_drag'
+import SprintBoard from './components/board'
+import Header from './components/tst_header';
+import { useEffect } from 'react';
+
+
+// const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  // useEffect(() => {
+  //   // import("bootstrap/dist/js/bootstrap");
+  //   require("bootstrap/dist/js/bootstrap.bundle.min.js");
+  // }, []);
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
+    // <main className={styles.main}>  
+    // <h1 className={inter.className}>Sprint Board</h1>
+    <main>  
+      {/* <h1 className="display-5 fw-bold text-center">Away Project Tracker</h1> */}
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+    {/* <main className='d-flex flex-column'></main> */}
+      {/* <h1>Sprint Board 1</h1> */}
+      <Header />
+      <Provider store={store}>
+        <SprintBoard peerInProgress peerCodeReview />
+      </Provider>
     </main>
   )
 }
+
+// export default function Home() {
+//   useEffect(() => {
+//     // import("bootstrap/dist/js/bootstrap");
+//     require("bootstrap/dist/js/bootstrap.bundle.min.js");
+//   }, []);
+//   return (
+//     <div className="container p-3 vh-100">
+//       <button className="btn btn-primary m-3">Sling Academy</button>
+//       <button className="btn btn-warning m-3">Hello</button>
+
+//       <div className="dropdown m-3">
+//         <button
+//           className="btn btn-secondary dropdown-toggle"
+//           type="button"
+//           data-bs-toggle="dropdown"
+//           id="dropdownMenuButton1"
+//           aria-expanded="false"
+//         >
+//           Dropdown button
+//         </button>
+//         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+//           <li>
+//             <a className="dropdown-item" href="#">
+//               Option 1
+//             </a>
+//           </li>
+//           <li>
+//             <a className="dropdown-item" href="#">
+//               Option 2
+//             </a>
+//           </li>
+//           <li>
+//             <a className="dropdown-item" href="#">
+//               Option 3
+//             </a>
+//           </li>
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+// import Head from 'next/head';
+
+// export default function Home() {
+//   return (
+//     <main className="d-flex flex-column min-vh-100">
+//       <Header />
+//       <Head>
+//         <title>Create Next App</title>
+//         <meta name="description" content="Generated by create next app" />
+//         <link rel="icon" href="/favicon.ico" />
+//       </Head>
+//       <div className="px-4 py-5 my-5 text-center flex-grow-1">
+//         <h1 className="display-5 fw-bold">Next.js + Bootstrap ❤️</h1>
+//         <div className="col-lg-6 mx-auto">
+//           <p className="lead mb-4">
+//             Quickly design and customize responsive mobile-first sites with Bootstrap, the
+//             world’s most popular front-end open source toolkit, featuring Sass variables
+//             and mixins, responsive grid system, extensive prebuilt components, and
+//             powerful JavaScript plugins.
+//           </p>
+//           <div className="d-grid gap-2 d-sm-flex justify-content-sm-center">
+//             <button type="button" className="btn btn-primary btn-lg px-4 gap-3">
+//               Primary button
+//             </button>
+//             <button type="button" className="btn btn-outline-secondary btn-lg px-4">
+//               Secondary
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </main>
+//   );
+// }

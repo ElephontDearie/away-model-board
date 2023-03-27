@@ -37,3 +37,16 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+###setup
+If minimum node version of 18.15.0 is not installed, install with the below. 
+Install nvm: 
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+```
+Install mimimum stable node version 18.15.0
+```bash
+npm install 18.15.0
+```
+npx prisma init --datasource-provider sqlite
+npx prisma migrate dev --name task
