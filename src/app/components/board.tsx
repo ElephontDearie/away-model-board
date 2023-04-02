@@ -10,11 +10,7 @@ import { AddTaskForm } from './createTask';
 
 import "../sass/task.scss";
 import { fetchTasks, updateTask } from '../handlers/task';
-
-// type Props = {
-//   peerInProgress?: boolean;
-//   peerCodeReview?: boolean;
-// };
+import { useAuthContext } from '../context/AuthContext';
 
 type Props = {
   peerReview?: boolean;
@@ -28,6 +24,8 @@ function isColString(col: TaskStatus | string): col is string {
 
 
 function SprintBoard(props: Props) {
+  const user = useAuthContext();
+
   const peerReview = props.peerReview || false;
   let peerInProgress: boolean, peerCodeReview: boolean = peerReview;
 
@@ -51,11 +49,8 @@ function SprintBoard(props: Props) {
       
     } 
     fetchData().catch(error => console.log(error));
-  }, []);
-  // useEffect(() => {
-  //   // import("bootstrap/dist/js/bootstrap");
-  //   require("bootstrap/dist/js/bootstrap.bundle.min.js");
-  // }, []);
+  }, [shownTasks]);
+
 
 
   const columns: string[] = Object.values(TaskStatus).filter(isColString);

@@ -4,15 +4,18 @@
 
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import SprintBoard1 from './components/board_drag'
 import SprintBoard from './components/board'
 import Header from './components/tst_header';
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from './context/AuthContext';
 
 
 // const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const user = useContext(AuthContext);
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+
   // useEffect(() => {
   //   // import("bootstrap/dist/js/bootstrap");
   //   require("bootstrap/dist/js/bootstrap.bundle.min.js");
@@ -22,13 +25,14 @@ export default function Home() {
     // <main className={styles.main}>  
     // <h1 className={inter.className}>Sprint Board</h1>
     <main>  
+
       {/* <h1 className="display-5 fw-bold text-center">Away Project Tracker</h1> */}
 
     {/* <main className='d-flex flex-column'></main> */}
       {/* <h1>Sprint Board 1</h1> */}
-      <Header />
+      <Header setAuthenticated={setAuthenticated} authenticated />
       <Provider store={store}>
-        <SprintBoard peerInProgress peerCodeReview />
+        <SprintBoard peerInProgress peerCodeReview authenticated/>
       </Provider>
     </main>
   )

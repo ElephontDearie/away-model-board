@@ -2,17 +2,14 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from '../redux/reducers';
 import { useRouter } from 'next/navigation';
-import { deleteTask } from '../redux/actions';
 import { Dispatch, SetStateAction, useState } from 'react';
-import "../sass/task.scss"
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-// export interface TaskType {
-//     inputTask: InputTask,
-//     inProgress: boolean,
-//     peerInProgress: boolean,
-//     codeReview: boolean,
-//     peerCodeReview: boolean,
-// }
+import "../sass/task.scss"
+import { deleteTask, updateEditableFields } from '../handlers/task';
+import { Form } from 'react-bootstrap';
+
 
 export enum TaskStatus {
     'To Do',
@@ -23,8 +20,6 @@ export enum TaskStatus {
     'Deployed', 
     'Done'
 }
-
-// export const taskStatusToString {}
 
 export type InputTask = {
     id: string,
@@ -37,28 +32,24 @@ export type InputTask = {
 type taskOptions = {
     peerTeam: boolean,
     task: InputTask,
-    // handleDragStart: (event: any, task: SetStateAction<null | InputTask>) => void
     setDraggedIssue: Dispatch<SetStateAction<InputTask | null>>
 }
 
 export const TaskItem = (props: taskOptions): JSX.Element => {
+    const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const task = props.task;
 
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const handleEdit = (id: number) => {
-        router.push(`/tasks/${id}`);
+    const openEditModal = (task: InputTask) => {
+        setShowEditModal(true);
+        // return EditModal(task, showEditModal, setShowEditModal)
+        // router.push(`/tasks/${id}`);
     };
-    const handleDelete = async (id: number) => {
-        await dispatch(deleteTask(id));
+    const handleDelete = async (id: string) => {
+        await deleteTask(id);
     };
-
-    // const [draggedIssue, setDraggedIssue] = useState(null);
-
-    // const handleDragStart = (event, issue) => {
-    //   setDraggedIssue(issue);
-    // };
 
     const handleDragStart = (event: any, task: SetStateAction<null | InputTask>) => {
         task && props.setDraggedIssue(task);
@@ -82,21 +73,83 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
             <h6 className="card-subtitle">{task.description}</h6>
             
             <section>
-                <button type="button" onClick={() => handleEdit(taskNo)}>
-                    Edit
-                </button>
-                <button type="button" onClick={() => handleDelete(taskNo)}>
-                    Delete
-                </button>
+                <Button className='btn btn-outline-light' onClick={() => openEditModal(task)}>Edit</Button>
+                <Button className='btn btn-danger btn-outline-dark' onClick={() => handleDelete(task.id)}>Delete</Button>
             </section>
+            <EditModal task={task} showModal={showEditModal} setShowModal={setShowEditModal}/>
         </div>
 
     )
 }
 
-function getTaskColour(task: InputTask) {
-    // console.log()
-    // return task.status == TaskStatus.Done ? 'bg-secondary' : 'done-status';
+export type Editable  = {
+    title: string;
+    description: string;
+    status: string;
+}
+const editableFields = (task: InputTask): Editable => ({
+    title: task.title,
+    description: task.description,
+    status: task.status.toString()
+})
 
+type EditProps = {
+    task: InputTask; 
+    showModal: boolean; 
+    setShowModal: Dispatch<SetStateAction<boolean>>;
+}
+const EditModal = (props: EditProps): JSX.Element => {
+    const { task, showModal, setShowModal } = props;
+    const [showEditBox, setShowEditBox] = useState(false);
+    const fields: Editable = editableFields(task);
+    const [updatedFields, setUpdatedFields] = useState<Editable>(fields);
+
+
+    const updateTaskFields = (id: string, updatedFields: Editable) => {
+        updateEditableFields(task.id, updatedFields);
+        setShowModal(prev => false);
+    }
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+        if (field == 'title') {
+            updatedFields.title = e.target.value;
+        } else if (field == 'status') {
+            updatedFields.status = e.target.value;
+        } else {
+            updatedFields.description = e.target.value;
+        }
+        
+        setUpdatedFields(updatedFields)
+    }
+    return (
+    <Modal show={showModal} onHide={() => setShowModal(prev => false)} backdrop='static' keyboard={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Editing {task.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            {Object.entries(fields).map(([k, v], i) => 
+            <Form onSubmit={() => setShowEditBox(prev => false)} key={i} className='clearfix'>
+
+                <Form.Group>
+                    {/* <span>{k +': '} <b>{v}</b> </span> */}
+                    <Form.Label>{k.toUpperCase() +': '}</Form.Label>
+                    <Form.Control type='text' name='value' defaultValue={v} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, k)}/>
+
+                </Form.Group>
+            </Form>
+            )}
+            
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(prev => false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={() => updateTaskFields(task.id, updatedFields)}>Save Changes</Button>
+        </Modal.Footer>
+
+
+    </Modal>
+)}
+
+function getTaskColour(task: InputTask) {
     return task.status == TaskStatus.Done ? 'done-status' : 'bg-secondary';
 }

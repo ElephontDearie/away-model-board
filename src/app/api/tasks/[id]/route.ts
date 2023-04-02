@@ -3,23 +3,49 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-
+type updateStatus = {
+  status: string
+}
+type updateFields = {
+  status: string,
+  description: string,
+  title: string
+}
 export async function PUT(req: Request, { params }) {
-    console.log('in update')
     const id = parseInt(params.id);
-    console.log(id)
-    const { status } = await req.json();
-    console.log(status)
+    const input: updateStatus | updateFields = await req.json();
+
+
+
     try {
-        const updatedTask: Task = await prisma.task.update({
-            where: {
-                id
-            },
-            data: {
-                status
+      const updatedTask: Task = await prisma.task.update({
+        where: {
+            id
         },
-    });
+        data: input
+      });
     
+    return new Response(null, {
+      status: 204
+    });
+  } catch (error) {
+    console.log(error);
+    return new Response(JSON.stringify('Error updating task'), {
+      status: 500
+    })
+  }
+} 
+
+export async function DELETE(req: Request, { params }) {
+  const id = parseInt(params.id);
+
+  try {
+      const deletedTask: Task = await prisma.task.delete({
+          where: {
+              id
+          },
+      })
+  
     return new Response(null, {
       status: 204
     });
@@ -29,4 +55,4 @@ export async function PUT(req: Request, { params }) {
       status: 500
     })
   }
-} 
+}

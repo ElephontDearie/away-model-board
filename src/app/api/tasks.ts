@@ -29,15 +29,16 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 //   }
 // }
 
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prismaClient } from '../db/db';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
 
     // We create a new Task
-    const newTask = await prisma.task.create({
+    const newTask = await prismaClient.task.create({
       data: {
         title: "task-1",
         description: "desc",

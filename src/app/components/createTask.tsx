@@ -28,8 +28,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       body: JSON.stringify(pendingTask),
     });
       console.log(res);
-      // const newTask = await res.json();
-      // console.log(newTask);
+      return res;
     } catch (error) {
       console.log(error);
   }
