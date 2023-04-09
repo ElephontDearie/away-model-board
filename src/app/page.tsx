@@ -3,18 +3,29 @@
 // import styles from './page.module.css'
 
 import { Provider } from 'react-redux';
-import store from './redux/store';
+// import store from './redux/store';
 import SprintBoard from './components/board'
 import Header from './components/tst_header';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from './context/AuthContext';
+import { isAdminUser } from './components/auth';
 
 
 // const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const user = useContext(AuthContext);
+  const idToken = useContext(AuthContext);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+
+    isAdminUser(user).then(r => {
+      console.log('page.tsx admin: ' +isAdmin)
+      setIsAdmin(r)
+    })
+  }, [user])
 
   // useEffect(() => {
   //   // import("bootstrap/dist/js/bootstrap");
@@ -31,9 +42,7 @@ export default function Home() {
     {/* <main className='d-flex flex-column'></main> */}
       {/* <h1>Sprint Board 1</h1> */}
       <Header setAuthenticated={setAuthenticated} authenticated />
-      <Provider store={store}>
-        <SprintBoard peerInProgress peerCodeReview authenticated/>
-      </Provider>
+      <SprintBoard peerInProgress peerCodeReview authenticated isAdmin={isAdmin}/>
     </main>
   )
 }

@@ -1,7 +1,7 @@
 "use client"; // this is a client component 
 
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux/reducers';
+// import { RootState } from '../redux/reducers';
 // import { fetchTasks, createTask, deleteTask } from '../redux/actions';
 import { useRouter } from 'next/navigation';
 import { SetStateAction, useEffect, useState } from 'react';
@@ -14,24 +14,25 @@ import { useAuthContext } from '../context/AuthContext';
 
 type Props = {
   peerReview?: boolean;
+  isAdmin: boolean;
 };
 
 function isColString(col: TaskStatus | string): col is string {
   return typeof col === 'string';
-  // (col as string). !== undefined;
 }
 
 
 
 function SprintBoard(props: Props) {
   const user = useAuthContext();
+  // const { isAdmin } = props;
 
   const peerReview = props.peerReview || false;
   let peerInProgress: boolean, peerCodeReview: boolean = peerReview;
+  const isAdmin = props.isAdmin
 
-  const tasks = useSelector((state: RootState) => state.tasks);
-
-  const dispatch = useDispatch();
+  // const tasks = useSelector((state: RootState) => state.tasks);
+  // const dispatch = useDispatch();
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,8 +50,8 @@ function SprintBoard(props: Props) {
       
     } 
     fetchData().catch(error => console.log(error));
+    // isAdminUser().then(r => setIsAdmin(r));
   }, [shownTasks]);
-
 
 
   const columns: string[] = Object.values(TaskStatus).filter(isColString);
@@ -59,7 +60,7 @@ function SprintBoard(props: Props) {
   const renderColItems = (col: string) => {
     return shownTasks && shownTasks.filter(t => t.status.toString() == col)
       .map(t => 
-      <TaskItem key={t.id} peerTeam task={t} setDraggedIssue={setDraggedIssue} />); 
+      <TaskItem key={t.id} peerTeam task={t} setDraggedIssue={setDraggedIssue} isAdmin={isAdmin}/>); 
     
   } 
 

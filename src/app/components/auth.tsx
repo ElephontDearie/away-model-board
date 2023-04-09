@@ -1,16 +1,26 @@
 import { ChangeEvent, Dispatch, ReactHTMLElement, SetStateAction, useState } from "react";
 import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap"
-import firebase from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User } from 'firebase/auth';
-import firebase_app from "../api/auth/firebase";
+// import firebase from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User, deleteUser } from 'firebase/auth';
+// import { getAuth as adminAuth} from 'firebase-admin/auth';
+// import { initializeApp } from "firebase-admin/app";
+import firebase_app from "../firebase/firebase_config";
+import { grantAdminRightsOnRegister } from "../handlers/auth";
 
 
 const adminEmailAddresses = [
   'admin@example.com',
-  'admin1@example.com'
+  'admin1@example.com',
+  'admin@test.com',
+  'admin1@test.com',
+  'ab@test.com',
+  'ca@t.com',
 ]
+export const deleteUserAccount = async () => {
 
-export const isAdmin = async () => {
+}
+
+export const isAdminUser = async () => {
   const user = getAuth(firebase_app).currentUser;
   if (user) {
     const idToken = await user?.getIdTokenResult(true);
@@ -36,7 +46,7 @@ const authoriseUser = async(email: string, password: string,
     setError: Dispatch<SetStateAction<string | null>>, 
     setShowModal: Dispatch<SetStateAction<boolean>>,
     setDisplayName: Dispatch<SetStateAction<string>>,
-     username?: string) => {
+     username: string) => {
 
     try {
         const auth = getAuth(firebase_app)
@@ -45,22 +55,29 @@ const authoriseUser = async(email: string, password: string,
           : await signInWithEmailAndPassword(auth, email, password);
 
         if (isRegister && auth.currentUser) {
+
           updateProfile(auth.currentUser, {
-            displayName: 'tst-name'
+            displayName: username,
           })
-          if (email in adminEmailAddresses) {
-            auth.setCustomUserClaims(auth.currentUser.uid, {
-              admin: true,
-            });      
+          deleteUserAccount()
+
+          if (adminEmailAddresses.includes(email)) {
+            await grantAdminRightsOnRegister(auth.currentUser.uid);   
           }
         }
-        console.log(credentials)
-        const user = credentials.user
-        // console.log(user)
+
+
         setAuthenticated(true)
         auth.currentUser?.displayName && setDisplayName(auth.currentUser.displayName);
         setShowModal(false);
     } catch (error: any) {
+        if (isRegister) {
+          if(error.code == 'auth/email-already-in-use') {
+            setError('An account already exists for this email address. Please sign in.')
+          } else if (error.code == 'auth/weak-password') {
+            setError(error.message)
+          }
+        }
         console.error(error)
         if (error.code == 'auth/invalid-email') {
           if (email == '') {
@@ -74,8 +91,10 @@ const authoriseUser = async(email: string, password: string,
           }
           
         
-        } else if (error.code == 'auth/wrong password') {
+        } else if (error.code == 'auth/wrong-password') {
           setError('Incorrect login details. Please try again.')
+        } else if (error.code == 'auth/user-not-found') {
+          setError('Please sign up to create a new account.')
         }
 
     }
@@ -100,7 +119,6 @@ export const AuthModal = (props: Props) => {
     const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         const userInput = e.target.value;
-        console.log(userInput)
         setInput({...input, [e.target.name]: userInput})
     }
     const authorise = (email: string, password: string, displayName: string) =>  {

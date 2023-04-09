@@ -5,9 +5,10 @@ import {
     onAuthStateChanged,
     getAuth,
     User,
-    signOut
+    signOut,
+    IdTokenResult
 } from 'firebase/auth';
-import firebase_app from '../api/auth/firebase'
+import firebase_app from '../firebase/firebase_config'
 
 interface Props {
     children: React.ReactNode;
@@ -23,6 +24,8 @@ export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({children}: Props) => {
     const [user, setUser] = useState<User | null>(null);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [idToken, setIdToken] = useState<IdTokenResult | undefined>(undefined);
     // const [loading, setLoading] = useState<boolean>(true);
 
     // const logout = async () => {
@@ -31,8 +34,10 @@ export const AuthContextProvider = ({children}: Props) => {
     // };
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = auth.onAuthStateChanged(async user => {
             setUser(user);
+            const idToken = await user?.getIdTokenResult(true);
+            setIdToken(idToken);
         })
         return unsubscribe;
         // const unsubscribe = onAuthStateChanged(auth, (user) => {

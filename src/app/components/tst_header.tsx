@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap";
-import { useAuthContext } from "../context/AuthContext";
+import { AuthContext, useAuthContext } from "../context/AuthContext";
 import { AuthModal, signOutUser } from "./auth";
 // import { AuthContext } from '../context/AuthContext';
 
@@ -66,7 +66,6 @@ const Header = (props: HeaderProps) => {
             {!user && <UnauthorisedComponent setIsRegister={setIsRegister}
                 setShowRegisterModal={setShowRegisterModal} 
                 setShowLoginModal={setShowLoginModal} />}
-                    {console.log(authenticated)}
 
             <AuthModal setShowModal={showLoginModal ? setShowLoginModal : setShowRegisterModal} 
               showModal={showLoginModal ? showLoginModal: showRegisterModal} 
@@ -85,17 +84,19 @@ const Header = (props: HeaderProps) => {
 const AuthorisedUserComponent = (props: {displayName: string, 
     setDisplayName: Dispatch<SetStateAction<string>>,
     setAuthenticated: Dispatch<SetStateAction<boolean>>, authenticated: boolean}): JSX.Element => {
+
+      const user = useContext(AuthContext);
+
   return (
     <div>
       <div className='text-end text-white'>
-          <p>Hello {props.displayName}!</p>
+          <p>Hello {user?.displayName || props.displayName}!</p>
       </div>
       <button type="button" className="btn btn-outline-light me-2" onClick={() => {
         signOutUser().then(() => {
           props.setDisplayName('');
           props.setAuthenticated(false)
         });
-        console.log(props.authenticated)
 
       }}>
         Sign Out
