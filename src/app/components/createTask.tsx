@@ -1,4 +1,6 @@
-import { InputTask, TaskStatus } from "./task";
+import { useState } from "react";
+import { TaskStatus } from "./task";
+import { ErrorModal, SuccessModal } from "./userInfo";
 
 export type CreateTaskArgs = {
   title: string;
@@ -6,8 +8,19 @@ export type CreateTaskArgs = {
   status: string;
 }
 
-const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
+
+
+
+export const AddTaskForm = () => {
+  const [showError, setShowError] = useState<boolean>(false);
+  const[showSuccess, setShowSuccess] = useState<boolean>(false);
+  const [outcomeMessage, setOutcomeMessage] = useState<string>('');
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setShowError(false);
+    setShowSuccess(false)
     const formData = new FormData(event.currentTarget);
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
@@ -19,7 +32,6 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       status
     } 
 
-    try {
     const res = await fetch('/api/tasks', {
       method: 'POST',
       headers: {
@@ -27,20 +39,35 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       },
       body: JSON.stringify(pendingTask),
     });
-      console.log(res);
-      return res;
-    } catch (error) {
-      console.log(error);
-  }
-};
 
+      if (res.status == 500) {
+        const errorMessage = await res.json();
+        setOutcomeMessage(errorMessage)
+        setShowError(true);
+        setTimeout(() => {
+          setShowError(false)
+        }, 5000)
+      } else {
+        setOutcomeMessage(`Task named "${title}" was successfully added to the sprint!`)
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false)
+        }, 5000)
+      }
+  };
 
+  return (
+  <>
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="title" placeholder="Title" required />
+      <input type="text" name="description" placeholder="Description" required />
+      <button type="submit">Add Task</button>
+    </form>
 
-export const AddTaskForm = () => 
-    <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="title" placeholder="Title" required />
-        <input type="text" name="description" placeholder="Description" required />
-        <button type="submit">Add Task</button>
-      </form>
-    </>
+    <ErrorModal setShowMessage={setShowError} showMessage={showError} message={outcomeMessage}/>
+    <SuccessModal setShowMessage={setShowSuccess} showMessage={showSuccess} message={outcomeMessage}/>
+    
+  </>
+  )
+}
+

@@ -11,11 +11,9 @@ type updateFields = {
   description: string,
   title: string
 }
-export async function PUT(req: Request, { params }) {
+export async function PUT(req: Request, { params }: { params: { id: string } } ) {
     const id = parseInt(params.id);
     const input: updateStatus | updateFields = await req.json();
-
-
 
     try {
       const updatedTask: Task = await prisma.task.update({
@@ -36,7 +34,7 @@ export async function PUT(req: Request, { params }) {
   }
 } 
 
-export async function DELETE(req: Request, { params }) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id);
 
   try {

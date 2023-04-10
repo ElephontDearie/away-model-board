@@ -9,20 +9,22 @@ import type { AppProps } from 'next/app';
 
 
 
-import { Provider } from 'react-redux';
-import store from '../redux/store';
+// import { Provider } from 'react-redux';
+// import store from '../redux/store';
 import { useEffect } from 'react';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
+    <>
+    </>
     // <>
     //   <Head>
     //   <meta name="viewport" content="width=device-width, initial-scale=1" />      
     //   </Head>
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
+      // <Provider store={store}>
+      //   <Component {...pageProps} />
+      // </Provider>
 
     // </>
   );

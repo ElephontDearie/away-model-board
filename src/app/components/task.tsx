@@ -40,10 +40,9 @@ type taskOptions = {
 export const TaskItem = (props: taskOptions): JSX.Element => {
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-    const [deleteId, setDeleteId] = useState<string>('');
+    // const [deleteId, setDeleteId] = useState<string>('');
     // const task = props.task;
     const {task, isAdmin} = props;
-    // console.log('isAdmin: ' + isAdmin)
 
     // const dispatch = useDispatch();
     const router = useRouter();
@@ -51,13 +50,13 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
 
 
 
-    const handleDelete = async (id: string) => {
-        // return confirm
-        await deleteTask(id);
-    };
+    // const handleDelete = async (id: string) => {
+    //     // return confirm
+    //     await deleteTask(id);
+    // };
     const confirmDeleteProps: CrudConfirmProps = {
-        confirmOperation: "Delete",
-        taskIdentifier: deleteId,
+        taskIdentifier: task.id,
+        taskTitle: task.title,
         showModal: showDeleteModal,
         setShowModal: setShowDeleteModal,
         // operationMethod: deleteTask(task.id)
@@ -86,8 +85,8 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
             
             <section>
                 <Button className='btn btn-outline-light' onClick={() => setShowEditModal(true)}>Edit</Button>
-                {!!isAdmin && <Button className='btn btn-danger btn-outline-dark' onClick={() => handleDelete(task.id)}>Delete</Button>}
-                {!!deleteId && <ConfirmDeleteModal {...confirmDeleteProps}/>}
+                {!!isAdmin && <Button className='btn btn-danger btn-outline-dark' onClick={() => setShowDeleteModal(true)}>Delete</Button>}
+                <ConfirmDeleteModal {...confirmDeleteProps}/>
             </section>
             <EditModal task={task} showModal={showEditModal} setShowModal={setShowEditModal}/>
         </div>

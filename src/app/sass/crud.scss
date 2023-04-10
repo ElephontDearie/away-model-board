@@ -1,0 +1,13 @@
+.taskTitleConfirm {
+    background: purple;
+    color: white;
+    border-radius: 30px;
+    text-align: center;
+    margin-top: 15px;
+}
+.crudError {
+    background: red;
+    color: white;
+}
+
+@import "bootstrap/dist/css/bootstrap.min.css"

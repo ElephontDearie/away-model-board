@@ -27,6 +27,13 @@ export async function POST(req: Request) {
       status: 201
     });
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes("Unique constraint failed")) {
+        return new Response(JSON.stringify('Please choose a title which does not already exist.'), {
+          status: 500
+        })
+      }
+    }
     console.error(error);
     // return NextResponse.
     return new Response(JSON.stringify('Error creating task'), {

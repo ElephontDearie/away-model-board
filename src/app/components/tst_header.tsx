@@ -2,7 +2,9 @@ import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react
 import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap";
 import { AuthContext, useAuthContext } from "../context/AuthContext";
 import { AuthModal, signOutUser } from "./auth";
+import Image from "next/image";
 // import { AuthContext } from '../context/AuthContext';
+import "../sass/header.scss"
 
 
 
@@ -27,6 +29,11 @@ const Header = (props: HeaderProps) => {
   
   // console.log(authenticated)
 
+  useEffect(() => {
+    user?.displayName && setDisplayName(user.displayName)
+  }, [user])
+
+
     return (
       <header className="p-3 bg-dark text-white">
         <div className="container">
@@ -36,11 +43,12 @@ const Header = (props: HeaderProps) => {
               href="#"
               className="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
             >
-              <img
+              <Image
                 src='/sprintLogo.svg'
                 alt='board-logo'
                 width={200}
                 height={100}
+                priority={true}
               />
             </a>
   
@@ -88,10 +96,10 @@ const AuthorisedUserComponent = (props: {displayName: string,
       const user = useContext(AuthContext);
 
   return (
-    <div>
-      <div className='text-end text-white'>
-          <p>Hello {user?.displayName || props.displayName}!</p>
-      </div>
+    <div className="container text-end">
+      <span className='text-white'>
+          <p>Hello {user?.displayName || props.displayName}</p>
+      </span>
       <button type="button" className="btn btn-outline-light me-2" onClick={() => {
         signOutUser().then(() => {
           props.setDisplayName('');

@@ -6,6 +6,8 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, up
 // import { initializeApp } from "firebase-admin/app";
 import firebase_app from "../firebase/firebase_config";
 import { grantAdminRightsOnRegister } from "../handlers/auth";
+import { useAuthContext } from "../context/AuthContext";
+
 
 
 const adminEmailAddresses = [
@@ -13,11 +15,14 @@ const adminEmailAddresses = [
   'admin1@example.com',
   'admin@test.com',
   'admin1@test.com',
-  'ab@test.com',
-  'ca@t.com',
+  'test@test.com'
 ]
-export const deleteUserAccount = async () => {
-
+const regEmailAddresses = [
+  's@test.com'
+]
+export const deleteUserAccount = async (user: User) => {
+  await deleteUser(user);
+  // user deleted confirmation modal
 }
 
 export const isAdminUser = async () => {
@@ -38,6 +43,7 @@ export const signOutUser = async () => {
     console.log(req)
   } catch (error) {
     console.log(error)
+    //Error modal
   }
 }
 
@@ -54,21 +60,19 @@ const authoriseUser = async(email: string, password: string,
           await createUserWithEmailAndPassword(auth, email, password)
           : await signInWithEmailAndPassword(auth, email, password);
 
+          // auth.currentUser && await deleteUserAccount(auth.currentUser)
         if (isRegister && auth.currentUser) {
 
           updateProfile(auth.currentUser, {
             displayName: username,
           })
-          deleteUserAccount()
 
           if (adminEmailAddresses.includes(email)) {
             await grantAdminRightsOnRegister(auth.currentUser.uid);   
+            await auth.currentUser.getIdTokenResult(true);
           }
         }
-
-
         setAuthenticated(true)
-        auth.currentUser?.displayName && setDisplayName(auth.currentUser.displayName);
         setShowModal(false);
     } catch (error: any) {
         if (isRegister) {
@@ -125,7 +129,6 @@ export const AuthModal = (props: Props) => {
       authoriseUser(email, password, 
         setAuthenticated, isRegister, setError, setShowModal, setDisplayName, displayName)
     }
-    
 
 
     return (
@@ -151,7 +154,7 @@ export const AuthModal = (props: Props) => {
     
             <Form.Group controlId="formBasicPassword">
               <Form.Label>Password</Form.Label>
-              <FormControl type="password" name="password" placeholder="Password" 
+              <FormControl type="password" name="password" placeholder="Password" autoComplete={isRegister ? "new-password" : "current-password"}
                 onChange={handleInput} />
             </Form.Group>
 

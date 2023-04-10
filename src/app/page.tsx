@@ -1,6 +1,8 @@
 "use client";
 // import { Inter } from 'next/font/google'
 // import styles from './page.module.css'
+import "./sass/board.scss";
+
 
 import { Provider } from 'react-redux';
 // import store from './redux/store';
@@ -19,13 +21,14 @@ export default function Home() {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+
   useEffect(() => {
 
-    isAdminUser(user).then(r => {
-      console.log('page.tsx admin: ' +isAdmin)
+    isAdminUser().then(r => {
+      // console.log('page.tsx admin: ' +isAdmin)
       setIsAdmin(r)
     })
-  }, [user])
+  }, [user, isAdmin])
 
   // useEffect(() => {
   //   // import("bootstrap/dist/js/bootstrap");
@@ -35,14 +38,15 @@ export default function Home() {
 
     // <main className={styles.main}>  
     // <h1 className={inter.className}>Sprint Board</h1>
-    <main>  
+    <main className='board'>  
 
       {/* <h1 className="display-5 fw-bold text-center">Away Project Tracker</h1> */}
 
     {/* <main className='d-flex flex-column'></main> */}
       {/* <h1>Sprint Board 1</h1> */}
       <Header setAuthenticated={setAuthenticated} authenticated />
-      <SprintBoard peerInProgress peerCodeReview authenticated isAdmin={isAdmin}/>
+      <SprintBoard isAdmin={isAdmin}/>
+      {/* Add peerInProgress peerCodeReview */}
     </main>
   )
 }

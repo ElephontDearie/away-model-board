@@ -1,6 +1,6 @@
 "use client"; // this is a client component 
 
-import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector, useDispatch } from 'react-redux';
 // import { RootState } from '../redux/reducers';
 // import { fetchTasks, createTask, deleteTask } from '../redux/actions';
 import { useRouter } from 'next/navigation';
@@ -50,7 +50,6 @@ function SprintBoard(props: Props) {
       
     } 
     fetchData().catch(error => console.log(error));
-    // isAdminUser().then(r => setIsAdmin(r));
   }, [shownTasks]);
 
 
@@ -83,12 +82,12 @@ function SprintBoard(props: Props) {
   return (
     <div>
       <AddTaskForm />
-      <div className='container-fluid board'>
+      <div className='container-fluid'>
 
         <div className="row">
           {columns.map(col => 
             <div key={col.valueOf()} 
-              className="col bg-primary text-white border border-white h4"
+              className="col sprint-col text-white border border-white h4"
               onDragOver={event => handleDragOver(event)}
               onDrop={event => handleDrop(event, col)}>
               {col}
