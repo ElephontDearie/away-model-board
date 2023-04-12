@@ -11,8 +11,13 @@ import { AddTaskForm } from './createTask';
 import "../sass/task.scss";
 import { fetchTasks, updateTask } from '../handlers/task';
 import { useAuthContext } from '../context/AuthContext';
+import { fetchSprintWithId } from '../handlers/sprint';
+import { CompleteSprint } from '../api/sprints/[id]/route';
+import { Sprint, Task } from '@prisma/client';
+import { ActiveSprintBanner } from './sprint';
 
-type Props = {
+type SprintProps = {
+  sprint: Sprint;
   peerReview?: boolean;
   isAdmin: boolean;
 };
@@ -23,34 +28,39 @@ function isColString(col: TaskStatus | string): col is string {
 
 
 
-function SprintBoard(props: Props) {
+function SprintBoard(props: SprintProps) {
   const user = useAuthContext();
   // const { isAdmin } = props;
 
   const peerReview = props.peerReview || false;
   let peerInProgress: boolean, peerCodeReview: boolean = peerReview;
-  const isAdmin = props.isAdmin
-
+  const isAdmin = props.isAdmin;
+  const sprintId = props.sprint?.id;
+  const sprintStatus = props.sprint?.status;
   // const tasks = useSelector((state: RootState) => state.tasks);
   // const dispatch = useDispatch();
   const router = useRouter();
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [shownTasks, setShownTasks] = useState<InputTask[] | null>(null);
-  const [draggedIssue, setDraggedIssue] = useState<null | InputTask>(null);
+  const [shownTasks, setShownTasks] = useState<Task[] | null>(null);
+  const [draggedIssue, setDraggedIssue] = useState<null | Task>(null);
+  // const [shownTasks, setShownTasks] = useState<InputTask[] | null>(null);
+  // const [draggedIssue, setDraggedIssue] = useState<null | InputTask>(null);
 
   useEffect(() => {
     // dispatch(fetchTasks());
     setLoading(true);
     const fetchData = async () => {
-      const response = await fetchTasks();
-      const tasks: InputTask[] = await response.json();
+      const response = await fetchSprintWithId(sprintId);
+      const sprintWithTasks: CompleteSprint = await response.json();
+
+      const tasks: Task[] = sprintWithTasks.tasks;
       setShownTasks(tasks);
       setLoading(false);
       
     } 
     fetchData().catch(error => console.log(error));
-  }, [shownTasks]);
+  }, [shownTasks, props.sprint]);
 
 
   const columns: string[] = Object.values(TaskStatus).filter(isColString);
@@ -71,7 +81,6 @@ function SprintBoard(props: Props) {
     event.preventDefault();
     const updatedIssues = shownTasks && shownTasks.map(task => {
       if (draggedIssue && task.id === draggedIssue.id) {
-        // task.status = TaskStatus[col as keyof typeof TaskStatus];
         updateTask(task.id, col).catch(console.error)
       }
       return task;
@@ -81,7 +90,8 @@ function SprintBoard(props: Props) {
   };
   return (
     <div>
-      <AddTaskForm />
+      <ActiveSprintBanner sprint={props.sprint}/>
+      {user && user.displayName && <AddTaskForm authorId={user.displayName} sprintId={sprintId} />}
       <div className='container-fluid'>
 
         <div className="row">

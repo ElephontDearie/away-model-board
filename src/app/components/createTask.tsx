@@ -2,17 +2,20 @@ import { useState } from "react";
 import { TaskStatus } from "./task";
 import { ErrorModal, SuccessModal } from "./userInfo";
 
-export type CreateTaskArgs = {
+export interface CreateTaskArgs extends AddTaskProps {
   title: string;
   description: string;
   status: string;
 }
 
 
+type AddTaskProps = {
+  authorId: string;
+  sprintId: number;
+}
 
 
-
-export const AddTaskForm = () => {
+export const AddTaskForm = (props: AddTaskProps) => {
   const [showError, setShowError] = useState<boolean>(false);
   const[showSuccess, setShowSuccess] = useState<boolean>(false);
   const [outcomeMessage, setOutcomeMessage] = useState<string>('');
@@ -25,11 +28,15 @@ export const AddTaskForm = () => {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const status = TaskStatus[TaskStatus["To Do"]]
+    const sprintId = props.sprintId
+    const authorId = props.authorId
 
     const pendingTask: CreateTaskArgs = {
       title,
       description,
-      status
+      status,
+      authorId,
+      sprintId
     } 
 
     const res = await fetch('/api/tasks', {

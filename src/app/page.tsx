@@ -1,16 +1,17 @@
 "use client";
 // import { Inter } from 'next/font/google'
 // import styles from './page.module.css'
+import Image from "next/image";
 import "./sass/board.scss";
-
 
 import { Provider } from 'react-redux';
 // import store from './redux/store';
 import SprintBoard from './components/board'
-import Header from './components/tst_header';
+import Header from './components/userBlock';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from './context/AuthContext';
 import { isAdminUser } from './components/auth';
+import { SprintView } from "./components/sprint";
 
 
 // const inter = Inter({ subsets: ['latin'] })
@@ -20,15 +21,15 @@ export default function Home() {
   const idToken = useContext(AuthContext);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  // console.log(user)
 
+  // useEffect(() => {
 
-  useEffect(() => {
-
-    isAdminUser().then(r => {
-      // console.log('page.tsx admin: ' +isAdmin)
-      setIsAdmin(r)
-    })
-  }, [user, isAdmin])
+  //   isAdminUser().then(r => {
+  //     // console.log('page.tsx admin: ' +isAdmin)
+  //     setIsAdmin(r)
+  //   })
+  // }, [user, isAdmin])
 
   // useEffect(() => {
   //   // import("bootstrap/dist/js/bootstrap");
@@ -38,14 +39,18 @@ export default function Home() {
 
     // <main className={styles.main}>  
     // <h1 className={inter.className}>Sprint Board</h1>
-    <main className='board'>  
+    // <main className='board'>  
+    <main>
+      {!user && <UserLessDisplay />}
+
+      {user && <SprintView isAdmin={isAdmin} />}
 
       {/* <h1 className="display-5 fw-bold text-center">Away Project Tracker</h1> */}
 
     {/* <main className='d-flex flex-column'></main> */}
       {/* <h1>Sprint Board 1</h1> */}
-      <Header setAuthenticated={setAuthenticated} authenticated />
-      <SprintBoard isAdmin={isAdmin}/>
+      {/* <Header setAuthenticated={setAuthenticated} authenticated /> */}
+      {/* <SprintBoard isAdmin={isAdmin}/> */}
       {/* Add peerInProgress peerCodeReview */}
     </main>
   )
@@ -129,3 +134,19 @@ export default function Home() {
 //     </main>
 //   );
 // }
+
+const UserLessDisplay = () => {
+  return (
+    <section className={"text-center my-5 py-5"}>
+      <h1 className={"text-muted alert alert-warning"}>Please <b>log in</b> <i>or</i> <b>sign up</b> to access sprints</h1>
+      <Image
+            src="/sprintLogo.svg"
+            alt="board-logo"
+            width={200}
+            height={200}
+            priority={true}
+        />
+
+    </section>
+  )
+}

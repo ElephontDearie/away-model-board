@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react"
-import { Alert, Button, Form, Modal } from "react-bootstrap"
+import { Alert, Button, Modal } from "react-bootstrap"
 import { deleteTask } from "../handlers/task";
 
 import "../sass/crud.scss"
@@ -21,7 +21,8 @@ interface ConfirmProps extends CrudConfirmProps {
 
 }
 export type CrudConfirmProps = {
-  taskIdentifier: string;
+  // taskIdentifier: string;
+  taskIdentifier: number;
   taskTitle: string;
   showModal: boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -47,21 +48,13 @@ export const OutcomeModal = (props: OutcomeTypeProps) => {
   const { message, showMessage, setShowMessage, outcomeString } = props
   
     return (
-      <>
-
       <Alert show={showMessage} className={outcomeString == "Success!" ? "alert alert-success" : "alert alert-danger"} dismissible>
         {outcomeString} {message}
       </Alert>
-      {/* // <div className={outcomeString == "Success!" ? "alert alert-success" : "alert alert-danger"}>
-      //   {outcomeString} {message}
-      // </div> */}
-      
-      </>
     )
 }
 
 export const ConfirmDeleteModal = (props: CrudConfirmProps) => {
-
   const confirmProps: ConfirmProps = {
     ...props,
     operationMethod: async () => await deleteTask(props.taskIdentifier),

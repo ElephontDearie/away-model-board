@@ -1,12 +1,13 @@
-import { ChangeEvent, Dispatch, ReactHTMLElement, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, ReactHTMLElement, SetStateAction, useEffect, useState } from "react";
 import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap"
 // import firebase from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User, deleteUser } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User, deleteUser, setPersistence, browserLocalPersistence } from 'firebase/auth';
 // import { getAuth as adminAuth} from 'firebase-admin/auth';
 // import { initializeApp } from "firebase-admin/app";
 import firebase_app from "../firebase/firebase_config";
 import { grantAdminRightsOnRegister } from "../handlers/auth";
 import { useAuthContext } from "../context/AuthContext";
+import { persistentLocalCache } from "firebase/firestore";
 
 
 
@@ -48,12 +49,11 @@ export const signOutUser = async () => {
 }
 
 const authoriseUser = async(email: string, password: string,
-    setAuthenticated: Dispatch<SetStateAction<boolean>>, isRegister: boolean,
+    isRegister: boolean,
     setError: Dispatch<SetStateAction<string | null>>, 
     setShowModal: Dispatch<SetStateAction<boolean>>,
-    setDisplayName: Dispatch<SetStateAction<string>>,
-     username: string) => {
-
+    username: string,
+     ) => {
     try {
         const auth = getAuth(firebase_app)
         const credentials = isRegister ? 
@@ -72,7 +72,6 @@ const authoriseUser = async(email: string, password: string,
             await auth.currentUser.getIdTokenResult(true);
           }
         }
-        setAuthenticated(true)
         setShowModal(false);
     } catch (error: any) {
         if (isRegister) {
@@ -109,12 +108,15 @@ type Props = {
     showModal: boolean;
     setShowModal: Dispatch<SetStateAction<boolean>>;
     isRegister: boolean;
-    setAuthenticated: Dispatch<SetStateAction<boolean>>;
-    setDisplayName: Dispatch<SetStateAction<string>>;
+    // setDisplayName: Dispatch<SetStateAction<string>>;
+    // setUser: Dispatch<SetStateAction<User | null>>;
 }
-export const AuthModal = (props: Props) => {
-    const {showModal, setShowModal, isRegister, setAuthenticated, setDisplayName} = props;
 
+
+export const AuthModal = (props: Props) => {
+    const {showModal, setShowModal, isRegister, 
+      // setDisplayName, setUser
+    } = props;
     const [input, setInput] = useState({ username: '', email: '', password: ''});
     const [error, setError] = useState<null | string>(null);
 
@@ -126,8 +128,13 @@ export const AuthModal = (props: Props) => {
         setInput({...input, [e.target.name]: userInput})
     }
     const authorise = (email: string, password: string, displayName: string) =>  {
-      authoriseUser(email, password, 
-        setAuthenticated, isRegister, setError, setShowModal, setDisplayName, displayName)
+        authoriseUser(email, password, 
+          isRegister, setError, setShowModal, 
+          // setDisplayName, 
+          displayName, 
+          // setUser
+          )
+
     }
 
 
@@ -140,14 +147,15 @@ export const AuthModal = (props: Props) => {
           <Form>
             {isRegister && <Form.Group controlId="formBasicUsername">
               <Form.Label>Username</Form.Label>
-              <FormControl type="username" name="username" placeholder="Username" 
+              <FormControl type="username" name="username" placeholder="Username" autoComplete="username"
                 onChange={handleInput} />
-            </Form.Group>}
+              </Form.Group>
+            }
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>
               <InputGroup>
                 <InputGroup.Text>@</InputGroup.Text>
-                <FormControl type="email" name="email" placeholder="Enter email" 
+                <FormControl type="email" name="email" placeholder="Enter email" autoComplete="email" 
                     onChange={handleInput} />
               </InputGroup>
             </Form.Group>
@@ -160,7 +168,7 @@ export const AuthModal = (props: Props) => {
 
             {isRegister && <Form.Group controlId="formBasicConfirmPassword">
                 <Form.Label>Confirm Password</Form.Label>
-                <FormControl type="password" placeholder="Confirm Password" />
+                <FormControl type="password" placeholder="Confirm Password" autoComplete={isRegister ? "new-password" : "current-password"}/>
             </Form.Group>}
           </Form>
           {error}

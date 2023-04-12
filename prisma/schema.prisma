@@ -10,15 +10,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Sprint {
+  id Int @id @default(autoincrement())
+  title String @unique
+  goal String
+  status String
+  startDate String
+  endDate String?
+  tasks Task[]
+}
+
 model Task {
   id Int @id @default(autoincrement())
+  sprint Sprint @relation(fields: [sprintId], references: [id])
+  sprintId Int
   title String @unique
   description String
   status String
+  authorId String
 }
 
-model User {
-  id String @id @default(cuid())
-  username String @unique
-  role String
-}

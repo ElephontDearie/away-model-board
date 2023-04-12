@@ -12,13 +12,15 @@ type Override<T1, T2> = Omit<T1, keyof T2> & T2;
 type CreateTaskRequest = Override<NextRequest, {body: CreateTaskArgs}>
 
 export async function POST(req: Request) {
-  const { title, description, status } = await req.json();
+  const { title, description, status, authorId, sprintId } = await req.json();
   try {
     const newTask: Task = await prisma.task.create({
       data: {
         title,
         description,
-        status
+        status,
+        authorId,
+        sprintId
       },
 
     });

@@ -1,7 +1,7 @@
-// 'use client';
 import "bootstrap/dist/css/bootstrap.min.css"; // Import bootstrap CSS
 import { AuthContextProvider } from "./context/AuthContext";
 import './globals.css';
+import Header from "./components/header";
 
 // import 'jquery/dist/jquery.js'
 // import 'popper.js/dist/umd/popper.js'
@@ -21,9 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* <body>{children}</body> */}
       <body>
         <AuthContextProvider>
+          <Header />
           {children}
         </AuthContextProvider>
       </body>

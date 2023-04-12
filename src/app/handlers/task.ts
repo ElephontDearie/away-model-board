@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
 import { Editable } from "../components/task";
+
+// To retrieve all tasks
 export const fetchTasks = async (): Promise<Response> => {
     const res = await fetch('/api/tasks', {
         method: 'GET'
@@ -7,7 +8,14 @@ export const fetchTasks = async (): Promise<Response> => {
     return res;
 }
 
-export const updateTask = async (taskId: string, taskStatus: string): Promise<Response> => {
+// To retrieve all tasks with a unique id.
+export const fetchTaskWithId = async (id: number): Promise<Response> => {
+    return await fetch(`/api/tasks/${id}`, {
+        method: 'GET',
+    })
+}
+
+export const updateTask = async (taskId: number, taskStatus: string): Promise<Response> => {
     const statusUpdate = {
         status: taskStatus
     }
@@ -19,7 +27,7 @@ export const updateTask = async (taskId: string, taskStatus: string): Promise<Re
 }
 
 
-export const updateEditableFields = async (taskId: string, editableFields: Editable): Promise<Response> => {
+export const updateEditableFields = async (taskId: number, editableFields: Editable): Promise<Response> => {
 
     return await fetch(`/api/tasks/${taskId}`, {
         method: 'PUT',
@@ -27,7 +35,7 @@ export const updateEditableFields = async (taskId: string, editableFields: Edita
     });
 }
 
-export const deleteTask = async (taskId: string): Promise<Response> => {
+export const deleteTask = async (taskId: number): Promise<Response> => {
     return await fetch(`/api/tasks/${taskId}`, {
         method: 'DELETE',
         body: JSON.stringify({

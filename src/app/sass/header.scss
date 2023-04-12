@@ -2,3 +2,19 @@
     float: right;
     margin-right: 0;
 }
+
+.backlog-route {
+    border-radius: 50px;
+    border: 50px;
+    color: white;
+}
+
+.sign-up {
+    background: greenyellow;
+    &:hover {
+        background: white;
+        color: black;
+    }
+}
+
+@import "bootstrap/dist/css/bootstrap.min.css"

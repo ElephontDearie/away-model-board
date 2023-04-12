@@ -1,4 +1,4 @@
-import { PrismaClient, Task } from "@prisma/client";
+import { PrismaClient, Sprint, Task } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -16,7 +16,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } } )
     const input: updateStatus | updateFields = await req.json();
 
     try {
-      const updatedTask: Task = await prisma.task.update({
+      const updatedSprint: Sprint = await prisma.sprint.update({
         where: {
             id
         },
@@ -28,7 +28,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } } )
     });
   } catch (error) {
     console.log(error);
-    return new Response(JSON.stringify('Error updating task'), {
+    return new Response(JSON.stringify('Error updating Sprint'), {
       status: 500
     })
   }
@@ -38,7 +38,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   const id = parseInt(params.id);
 
   try {
-      const deletedTask: Task = await prisma.task.delete({
+      const deletedSprint: Sprint = await prisma.sprint.delete({
           where: {
               id
           },
@@ -49,32 +49,43 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     });
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify('Error updating task'), {
+    return new Response(JSON.stringify('Error updating Sprint'), {
       status: 500
     })
   }
 }
 
-// For retrieving a task with a particular id.
+export type CompleteSprint = {
+  sprint: Sprint;
+  tasks: Task[];
+}
+
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id);
-  const isTaskId: boolean = await req.json();
 
   try {
-    const task: Task = await prisma.task.findFirstOrThrow({
+      const sprintWithId: Sprint = await prisma.sprint.findFirstOrThrow({
+          where: {
+              id
+          },
+      })
+      const sprintTasks: Task[] = await prisma.task.findMany({
         where: {
-            id
-        },
-    })
-
-    return new Response(null, {
+          sprintId: id
+        }
+      })
+      const sprintWithTasks: CompleteSprint = {
+        sprint: sprintWithId,
+        tasks: sprintTasks
+      }
+  
+    return new Response(JSON.stringify(sprintWithTasks), {
       status: 200
     });
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify(`Error retrieving task with ID ${id}`), {
+    return new Response(JSON.stringify('Error retrieving Sprint'), {
       status: 500
     })
   }
-  
 }

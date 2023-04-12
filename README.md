@@ -51,3 +51,5 @@ npm install 18.15.0
 #### Prisma server 
 ```npx prisma init --datasource-provider sqlite```
 ```npx prisma migrate dev --name away-tracker```
+```npx prisma generate```
+```npm run build```

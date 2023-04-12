@@ -7,9 +7,10 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 import "../sass/task.scss"
-import { deleteTask, updateEditableFields } from '../handlers/task';
+import { updateEditableFields } from '../handlers/task';
 import { Form } from 'react-bootstrap';
 import { ConfirmDeleteModal, CrudConfirmProps } from './userInfo';
+import { Task } from '@prisma/client';
 
 
 export enum TaskStatus {
@@ -23,17 +24,19 @@ export enum TaskStatus {
 }
 
 export type InputTask = {
-    id: string,
+    id: number,
     title: string,
     description: string,
-    status: TaskStatus //set as to-do on creation
+    status: string //set as to-do on creation
 }
 
 
 type taskOptions = {
     peerTeam: boolean,
-    task: InputTask,
-    setDraggedIssue: Dispatch<SetStateAction<InputTask | null>>,
+    // task: InputTask,
+    // setDraggedIssue: Dispatch<SetStateAction<InputTask | null>>,
+    task: Task,
+    setDraggedIssue: Dispatch<SetStateAction<Task | null>>,
     isAdmin: boolean
 }
 
@@ -47,13 +50,6 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
     // const dispatch = useDispatch();
     const router = useRouter();
 
-
-
-
-    // const handleDelete = async (id: string) => {
-    //     // return confirm
-    //     await deleteTask(id);
-    // };
     const confirmDeleteProps: CrudConfirmProps = {
         taskIdentifier: task.id,
         taskTitle: task.title,
@@ -62,7 +58,7 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
         // operationMethod: deleteTask(task.id)
     }
 
-    const handleDragStart = (event: any, task: SetStateAction<null | InputTask>) => {
+    const handleDragStart = (event: any, task: SetStateAction<null | Task>) => {
         task && props.setDraggedIssue(task);
     };
 
@@ -72,20 +68,22 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
         description: task.description,
         status: task.status
     }
-    const taskNo: number = parseInt(task.id);
+    // const taskNo: number = parseInt(task.id);
+    const taskNo: number = task.id;
+
 
     return (
         <div className={"card col border border-black " + getTaskColour(task)}
             draggable
             onDragStart={event => handleDragStart(event, task)}
         >
-            <h6 className="card-title text-muted">{task.id}</h6>
-            <h5 className="card-title">{task.title}</h5>
-            <h6 className="card-subtitle">{task.description}</h6>
+            <h6 className="card-title text-dark">{task.id}</h6>
+            <h5 className="card-title bg-dark">{task.title}</h5>
+            <h6 className="card-subtitle text-dark">{task.description}</h6>
             
             <section>
-                <Button className='btn btn-outline-light' onClick={() => setShowEditModal(true)}>Edit</Button>
-                {!!isAdmin && <Button className='btn btn-danger btn-outline-dark' onClick={() => setShowDeleteModal(true)}>Delete</Button>}
+                <Button className='btn btn-outline-dark text-white' onClick={() => setShowEditModal(true)}>Edit</Button>
+                {!!isAdmin && <Button className='btn btn-danger btn-outline-dark text-white' onClick={() => setShowDeleteModal(true)}>Delete</Button>}
                 <ConfirmDeleteModal {...confirmDeleteProps}/>
             </section>
             <EditModal task={task} showModal={showEditModal} setShowModal={setShowEditModal}/>
@@ -122,7 +120,7 @@ type EditProps = {
     showModal: boolean; 
     setShowModal: Dispatch<SetStateAction<boolean>>;
 }
-const EditModal = (props: EditProps): JSX.Element => {
+export const EditModal = (props: EditProps): JSX.Element => {
     const { task, showModal, setShowModal } = props;
     const [showEditBox, setShowEditBox] = useState(false);
     const fields: Editable = editableFields(task);
@@ -130,7 +128,7 @@ const EditModal = (props: EditProps): JSX.Element => {
     const [updatedFields, setUpdatedFields] = useState<Editable>(fields);
 
 
-    const updateTaskFields = (id: string, updatedFields: Editable) => {
+    const updateTaskFields = (id: number, updatedFields: Editable) => {
         updateEditableFields(task.id, updatedFields);
         setShowModal(prev => false);
     }
@@ -177,5 +175,5 @@ const EditModal = (props: EditProps): JSX.Element => {
 )}
 
 function getTaskColour(task: InputTask) {
-    return task.status == TaskStatus.Done ? 'done-status' : 'bg-secondary';
+    return task.status == TaskStatus[TaskStatus.Done] ? 'bg-success' : 'bg-warning';
 }

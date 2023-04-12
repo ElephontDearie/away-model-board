@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app';
 
 // import "../styles/globals.css"; //own styles
 // import 'bootstrap/dist/css/bootstrap.css';
+import Header from "../components/header";
 
 
 
@@ -17,6 +18,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+
+      <Component {...pageProps} />
+
     </>
     // <>
     //   <Head>
