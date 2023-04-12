@@ -4,8 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 const prisma = new PrismaClient();
 
 type updateStatus = {
-  status: string
+  status: string;
 }
+type updateSprint = {
+  sprintId: number;
+}
+
 type updateFields = {
   status: string,
   description: string,
@@ -13,7 +17,7 @@ type updateFields = {
 }
 export async function PUT(req: Request, { params }: { params: { id: string } } ) {
     const id = parseInt(params.id);
-    const input: updateStatus | updateFields = await req.json();
+    const input: updateStatus | updateSprint | updateFields = await req.json();
 
     try {
       const updatedTask: Task = await prisma.task.update({

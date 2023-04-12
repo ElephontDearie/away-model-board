@@ -2,7 +2,7 @@ import { CreateSprintArgs } from "../components/sprint";
 
 type StatusUpdate = {
     status: string;
-    endDate?: string;
+    endDate?: Date;
 }
 
 // Retrieve all sprints
@@ -19,7 +19,7 @@ export const fetchSprintWithId = async (id: number): Promise<Response> => {
     });
 }
 
-export const updateSprint = async (sprintId: number, sprintStatus: string, endDate?: string): Promise<Response> => {
+export const updateSprint = async (sprintId: number, sprintStatus: string, endDate?: Date): Promise<Response> => {
     let statusUpdate: StatusUpdate = {
         status: sprintStatus
     }

@@ -15,14 +15,18 @@ export const fetchTaskWithId = async (id: number): Promise<Response> => {
     })
 }
 
-export const updateTask = async (taskId: number, taskStatus: string): Promise<Response> => {
-    const statusUpdate = {
-        status: taskStatus
+export const updateTask = async (taskId: number, taskStatus?: string, sprintId?: number): Promise<Response> => {
+    let update = {};
+    if (taskStatus) {
+        update = {...update, status: taskStatus}
+    }
+    if (sprintId) {
+        update = {...update, sprintId}
     }
 
     return await fetch(`/api/tasks/${taskId}`, {
         method: 'PUT',
-        body: JSON.stringify(statusUpdate)
+        body: JSON.stringify(update)
     });
 }
 

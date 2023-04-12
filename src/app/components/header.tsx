@@ -2,6 +2,7 @@ import Image from "next/image";
 import { BacklogNavigation, SprintList, LogoNavigation} from "./headerNav";
 import "../sass/header.scss";
 import UserBlock from "./userBlock";
+import { CreateSprintButton } from "./sprint";
 const Header = () => {
     // const router = useRouter();
 
@@ -24,13 +25,18 @@ const Header = () => {
                 </li>
                 <li className="px-1">
                   <SprintList />
-                  {/* <a href="#" className="nav-link px-2 text-white">
-                    Past Sprints
-                  </a> */}
+                </li>
+                <li className="px-1">
+                  <CreateSprintButton />
                 </li>
                 <li>
-                  <a href="#" className="nav-link px-2 text-white">
+                  <a href="/about" className="nav-link px-2 text-white">
                     About
+                  </a>
+                </li>
+                <li>
+                  <a href="/" className="nav-link px-2 text-white">
+                    Home
                   </a>
                 </li>
               </ul>

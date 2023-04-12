@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TaskStatus } from "./task";
 import { ErrorModal, SuccessModal } from "./userInfo";
+import { Button, Form, FormGroup, FormLabel } from "react-bootstrap";
 
 export interface CreateTaskArgs extends AddTaskProps {
   title: string;
@@ -11,7 +12,7 @@ export interface CreateTaskArgs extends AddTaskProps {
 
 type AddTaskProps = {
   authorId: string;
-  sprintId: number;
+  sprintId?: number;
 }
 
 
@@ -28,15 +29,17 @@ export const AddTaskForm = (props: AddTaskProps) => {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const status = TaskStatus[TaskStatus["To Do"]]
-    const sprintId = props.sprintId
+    const sprintId = props.sprintId;
     const authorId = props.authorId
 
-    const pendingTask: CreateTaskArgs = {
+    let pendingTask: CreateTaskArgs = {
       title,
       description,
       status,
       authorId,
-      sprintId
+    }
+    if (sprintId) {
+      pendingTask = {...pendingTask, sprintId}
     } 
 
     const res = await fetch('/api/tasks', {
@@ -65,11 +68,11 @@ export const AddTaskForm = (props: AddTaskProps) => {
 
   return (
   <>
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} className="mt-2">
       <input type="text" name="title" placeholder="Title" required />
       <input type="text" name="description" placeholder="Description" required />
-      <button type="submit">Add Task</button>
-    </form>
+      <Button type="submit" className="bg-warning text-dark">Add Task</Button>
+    </Form>
 
     <ErrorModal setShowMessage={setShowError} showMessage={showError} message={outcomeMessage}/>
     <SuccessModal setShowMessage={setShowSuccess} showMessage={showSuccess} message={outcomeMessage}/>
@@ -77,4 +80,5 @@ export const AddTaskForm = (props: AddTaskProps) => {
   </>
   )
 }
+
 

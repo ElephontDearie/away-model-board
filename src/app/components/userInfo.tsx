@@ -4,6 +4,11 @@ import { deleteTask } from "../handlers/task";
 
 import "../sass/crud.scss"
 
+export enum Outcome {
+  Success,
+  Error
+}
+
 type OutcomeProps = {
     message: string;
     showMessage: boolean;

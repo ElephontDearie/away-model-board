@@ -16,16 +16,32 @@ interface Props {
 
 const auth = getAuth(firebase_app);
 
+type GivenContext = {
+    user: User | null;
+    isAdmin: boolean;
+    refreshedIdToken: IdTokenResult | undefined;
+}
+
 // export const AuthContext = createContext({});
-export const AuthContext = createContext<User | null>(null);
+// export const AuthContext = createContext<User | null>(null);
+export const AuthContext = createContext<GivenContext>({
+    user: null,
+    isAdmin: false,
+    refreshedIdToken: undefined
+})
 
 
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({children}: Props) => {
     const [user, setUser] = useState<User | null>(null);
-    // const [isAdmin, setIsAdmin] = useState<boolean>(false);
-    // const [idToken, setIdToken] = useState<IdTokenResult | undefined>(undefined);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [idToken, setIdToken] = useState<IdTokenResult | undefined>(undefined);
+    const [givenContext, setGivenContext] = useState<GivenContext>({
+        user: null,
+        isAdmin: false,
+        refreshedIdToken: undefined
+    })
     // const [loading, setLoading] = useState<boolean>(true);
 
     // const logout = async () => {
@@ -35,9 +51,16 @@ export const AuthContextProvider = ({children}: Props) => {
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async user => {
-            setUser(user);
-            // const idToken = await user.getIdTokenResult(true);
+            // setUser(user);
+            const idToken = await user?.getIdTokenResult(true);
             // setIdToken(idToken);
+            const isAdmin = await idToken?.claims['admin'] == true;
+            // setIsAdmin(isAdmin)
+            setGivenContext({
+                user,
+                isAdmin,
+                refreshedIdToken: idToken
+            })
         })
         return unsubscribe;
         // const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -53,7 +76,7 @@ export const AuthContextProvider = ({children}: Props) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={user}>
+        <AuthContext.Provider value={givenContext}>
             {children}
             {/* {loading ? <div>Loading...</div> : children} */}
         </AuthContext.Provider>

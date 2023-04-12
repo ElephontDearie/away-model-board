@@ -1,6 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
 
-// import { RootState } from '../redux/reducers';
 import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from 'react-bootstrap/Button';
@@ -43,12 +42,7 @@ type taskOptions = {
 export const TaskItem = (props: taskOptions): JSX.Element => {
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-    // const [deleteId, setDeleteId] = useState<string>('');
-    // const task = props.task;
     const {task, isAdmin} = props;
-
-    // const dispatch = useDispatch();
-    const router = useRouter();
 
     const confirmDeleteProps: CrudConfirmProps = {
         taskIdentifier: task.id,
@@ -68,17 +62,16 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
         description: task.description,
         status: task.status
     }
-    // const taskNo: number = parseInt(task.id);
     const taskNo: number = task.id;
 
 
     return (
-        <div className={"card col border border-black " + getTaskColour(task)}
+        <div className={"card col border border-black my-3 " + getTaskColour(task)}
             draggable
             onDragStart={event => handleDragStart(event, task)}
         >
-            <h6 className="card-title text-dark">{task.id}</h6>
-            <h5 className="card-title bg-dark">{task.title}</h5>
+            <h6 className="card-title text-dark">#{task.id}</h6>
+            <h5 className="card-title bg-dark text-center">{task.title}</h5>
             <h6 className="card-subtitle text-dark">{task.description}</h6>
             
             <section>
@@ -91,6 +84,18 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
 
     )
 }
+
+
+export type Editable  = {
+    title: string;
+    description: string;
+}
+const editableFields = (task: InputTask): Editable => ({
+    title: task.title,
+    description: task.description,
+})
+
+// TODO: Add taskId, sprint titles of sprints the task has been in, author, and created date.
 type Displayable = {
     status: string;
     // author: string;
@@ -98,16 +103,6 @@ type Displayable = {
     // lastUpdated: string;
 }
 
-export type Editable  = {
-    title: string;
-    description: string;
-    // status: string;
-}
-const editableFields = (task: InputTask): Editable => ({
-    title: task.title,
-    description: task.description,
-    // status: task.status.toString()
-})
 const readableFields = (task: InputTask): Displayable => ({
     status: task.status.toString(),
     // author: task.author,
@@ -144,7 +139,7 @@ export const EditModal = (props: EditProps): JSX.Element => {
         setUpdatedFields(updatedFields)
     }
     return (
-    <Modal show={showModal} onHide={() => setShowModal(prev => false)} backdrop='static' keyboard={false}>
+    <Modal show={showModal} onHide={() => setShowModal(false)} backdrop='static' keyboard={false}>
         <Modal.Header closeButton>
           <Modal.Title>Editing {task.title}</Modal.Title>
         </Modal.Header>
@@ -164,7 +159,7 @@ export const EditModal = (props: EditProps): JSX.Element => {
             
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(prev => false)}>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close
           </Button>
           <Button variant="primary" onClick={() => updateTaskFields(task.id, updatedFields)}>Save Changes</Button>

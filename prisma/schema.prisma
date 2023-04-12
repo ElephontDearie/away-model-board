@@ -22,8 +22,8 @@ model Sprint {
 
 model Task {
   id Int @id @default(autoincrement())
-  sprint Sprint @relation(fields: [sprintId], references: [id])
-  sprintId Int
+  sprint Sprint? @relation(fields: [sprintId], references: [id])
+  sprintId Int?
   title String @unique
   description String
   status String

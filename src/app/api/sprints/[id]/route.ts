@@ -1,19 +1,18 @@
+import { SprintStatus } from "@/app/components/sprint";
 import { PrismaClient, Sprint, Task } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-type updateStatus = {
-  status: string
-}
+
 type updateFields = {
-  status: string,
-  description: string,
-  title: string
+  endDate: string,
+  status: string
 }
 export async function PUT(req: Request, { params }: { params: { id: string } } ) {
     const id = parseInt(params.id);
-    const input: updateStatus | updateFields = await req.json();
+    const input: updateFields = await req.json();
+    console.log(input)
 
     try {
       const updatedSprint: Sprint = await prisma.sprint.update({

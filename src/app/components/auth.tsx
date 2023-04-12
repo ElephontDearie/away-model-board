@@ -7,7 +7,6 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, up
 import firebase_app from "../firebase/firebase_config";
 import { grantAdminRightsOnRegister } from "../handlers/auth";
 import { useAuthContext } from "../context/AuthContext";
-import { persistentLocalCache } from "firebase/firestore";
 
 
 

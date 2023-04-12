@@ -8,7 +8,7 @@ import firebase_app from "../firebase/firebase_config";
 
 
 const UserBlock = () => {
-  const user = useAuthContext();
+  const { user, isAdmin } = useAuthContext();
   // const user = useContext(AuthContext);
 
 

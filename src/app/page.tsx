@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import SprintBoard from './components/board'
 import Header from './components/userBlock';
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { useAuthContext } from './context/AuthContext';
 import { isAdminUser } from './components/auth';
 import { SprintView } from "./components/sprint";
 
@@ -17,11 +17,7 @@ import { SprintView } from "./components/sprint";
 // const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const user = useContext(AuthContext);
-  const idToken = useContext(AuthContext);
-  const [authenticated, setAuthenticated] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  // console.log(user)
+  const { user, isAdmin } = useAuthContext();
 
   // useEffect(() => {
 
@@ -43,7 +39,7 @@ export default function Home() {
     <main>
       {!user && <UserLessDisplay />}
 
-      {user && <SprintView isAdmin={isAdmin} />}
+      {user && <SprintView />}
 
       {/* <h1 className="display-5 fw-bold text-center">Away Project Tracker</h1> */}
 
@@ -53,6 +49,22 @@ export default function Home() {
       {/* <SprintBoard isAdmin={isAdmin}/> */}
       {/* Add peerInProgress peerCodeReview */}
     </main>
+  )
+}
+
+const UserLessDisplay = () => {
+  return (
+    <section className={"text-center my-5 py-5"}>
+      <h1 className={"text-muted alert alert-warning"}>Please <b>log in</b> <i>or</i> <b>sign up</b> to access sprints</h1>
+      <Image
+            src="/sprintLogo.svg"
+            alt="board-logo"
+            width={200}
+            height={200}
+            priority={true}
+        />
+
+    </section>
   )
 }
 
@@ -135,18 +147,3 @@ export default function Home() {
 //   );
 // }
 
-const UserLessDisplay = () => {
-  return (
-    <section className={"text-center my-5 py-5"}>
-      <h1 className={"text-muted alert alert-warning"}>Please <b>log in</b> <i>or</i> <b>sign up</b> to access sprints</h1>
-      <Image
-            src="/sprintLogo.svg"
-            alt="board-logo"
-            width={200}
-            height={200}
-            priority={true}
-        />
-
-    </section>
-  )
-}

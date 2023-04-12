@@ -4,4 +4,42 @@
     
 }
 
-.sprint-col {background: rgb(57, 53, 129);}
+.sprint-col {
+    background: rgb(57, 53, 129);
+}
+
+.sprint-banner-active {
+    background: rgb(175, 233, 89);
+;}
+
+.sprint-banner-pending {
+    background: rgb(98, 170, 233);
+    color: rgb(26, 23, 23);
+;}
+.sprint-banner-complete {
+    background: rgb(215, 217, 213);
+;}
+
+
+.banner-width {
+    width: 100%
+}
+
+/* Give a click effect */
+.clickable {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Add hover effect */
+.clickable:hover {
+    background-color: #f8f9fa; /* Change background color on hover */
+}
+  
+  /* Add active effect */
+.clickable:active {
+    background-color: #dee2e6; /* Change background color when item is clicked */
+}
+
+
+@import "bootstrap/dist/css/bootstrap.min.css"

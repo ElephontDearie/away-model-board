@@ -9,12 +9,12 @@ import { InputTask, TaskItem, TaskStatus } from './task';
 import { AddTaskForm } from './createTask';
 
 import "../sass/task.scss";
-import { fetchTasks, updateTask } from '../handlers/task';
+import { updateTask } from '../handlers/task';
 import { useAuthContext } from '../context/AuthContext';
 import { fetchSprintWithId } from '../handlers/sprint';
 import { CompleteSprint } from '../api/sprints/[id]/route';
 import { Sprint, Task } from '@prisma/client';
-import { ActiveSprintBanner } from './sprint';
+import { SprintBannerOnBoard } from './sprint';
 
 type SprintProps = {
   sprint: Sprint;
@@ -29,12 +29,12 @@ function isColString(col: TaskStatus | string): col is string {
 
 
 function SprintBoard(props: SprintProps) {
-  const user = useAuthContext();
+  const { user, isAdmin } = useAuthContext();
   // const { isAdmin } = props;
 
   const peerReview = props.peerReview || false;
   let peerInProgress: boolean, peerCodeReview: boolean = peerReview;
-  const isAdmin = props.isAdmin;
+  // const isAdmin = props.isAdmin;
   const sprintId = props.sprint?.id;
   const sprintStatus = props.sprint?.status;
   // const tasks = useSelector((state: RootState) => state.tasks);
@@ -90,7 +90,7 @@ function SprintBoard(props: SprintProps) {
   };
   return (
     <div>
-      <ActiveSprintBanner sprint={props.sprint}/>
+      {/* <SprintBannerOnBoard sprint={props.sprint}/> */}
       {user && user.displayName && <AddTaskForm authorId={user.displayName} sprintId={sprintId} />}
       <div className='container-fluid'>
 

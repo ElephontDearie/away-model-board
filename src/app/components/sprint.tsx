@@ -1,12 +1,16 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+"use client";
+import { Dispatch, RefAttributes, SetStateAction, useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { ErrorModal, SuccessModal } from "./userInfo";
-import { Badge, Button, ListGroup, ListGroupItem, Modal } from "react-bootstrap";
+import { Badge, Button, ListGroup, ListGroupItem, Modal, Overlay, OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 import { createSprint, fetchSprints, updateSprint } from "../handlers/sprint";
 import SprintBoard from "./board";
 import { isAdminUser } from "./auth";
 import { Sprint } from "@prisma/client";
-import "../sass/header.scss"
+import "../sass/header.scss";
+import "../sass/board.scss";
+import Board from "../sprint/[id]/page";
+import { useRouter } from "next/navigation";
 
 
 
@@ -31,34 +35,115 @@ const statusColour = (status: string) => {
     else return "bg-secondary"
 }
 
-export const ActiveSprintBanner = ({sprint}: {sprint: Sprint}) => {
+export const SprintBanner = ({sprint}: {sprint: Sprint}) => {
     return (
         <ListGroup className={"text-center"}>
-            <ListGroupItem key={sprint.id}>
-                <span className={"me-5"}>{sprint.title}</span>
-                <Badge className={statusColour(sprint.status) + " me-5"}>{sprint.status}</Badge>
-            </ListGroupItem>
+            <SingleSprintBanner sprint={sprint}/>
+        </ListGroup>
+    )
+}
+
+export const SprintBannerOnBoard = ({sprint, activeSprintExists}: {sprint: Sprint, activeSprintExists: boolean}) => {
+    const isClosed = sprint.status == SprintStatus[SprintStatus.Complete];
+    const isPending = sprint.status == SprintStatus[SprintStatus.Pending];
+    const isActive = sprint.status == SprintStatus[SprintStatus.Active];
+
+    const activateSprint = async (sprintId: number) => {
+        return await updateSprint(sprintId, SprintStatus[SprintStatus.Active])
+    }
+
+    const getSprintActionLabel = () => {
+        if (isPending) {
+            return "Start Sprint";
+        } else if (isActive) {
+            return "Complete Sprint";
+        }
+    }
+    const availableSprintAction = () => {
+        if (isPending) {
+            activateSprint(sprint.id);
+        } else if (isActive) {
+            completeSprint(sprint.id);
+        }
+    }
+    const disabledArgs = () => {
+        if (isPending && activeSprintExists) {
+            return true;
+        }
+        return false;
+    }
+    const tooltipWarning = (props: any) => (
+            <Tooltip id="tooltip-active-exists-warning" {...props}>
+                Active sprint must be completed before a new sprint can be started.
+            </Tooltip>
+    );
+    
+    return (
+        <ListGroup horizontal className={"text-center d-flex flex-fill"}>
+            <SingleSprintBanner sprint={sprint} />
+            {!isClosed && <ListGroupItem>
+                {!isPending && 
+                    <Button size="sm" onClick={() => availableSprintAction()} disabled={disabledArgs()}
+                    className={statusColour(sprint.status)}>{getSprintActionLabel()}</Button>
+                }
+                {isPending &&
+                    <OverlayTrigger placement="left" 
+                    delay={{ show: 250, hide: 400 }}
+                    // show={disabledArgs()}
+                    // trigger="hover"
+                    overlay={tooltipWarning}>
+                        <span className="d-inline-block">
+                        <Button size="sm" onClick={() => availableSprintAction()} disabled={disabledArgs()}
+                            style={{ pointerEvents: 'none' }}
+                            className={statusColour(sprint.status)}>{getSprintActionLabel()}</Button>
+                        </span>
+                   
+                </OverlayTrigger>
+                }
+                
+            </ListGroupItem>}
         </ListGroup>
 
     )
 }
 
-const ShowSprintList = ({sprints, hasActiveSprint}: {sprints: Sprint[] | undefined, hasActiveSprint: boolean}) => {
-    const activateSprint = async (sprintId: number) => {
-        return await updateSprint(sprintId, SprintStatus[SprintStatus.Active])
+const SingleSprintBanner = ({sprint}: {sprint: Sprint}) => {
+    const router = useRouter();
+    const getBannerColour = () => {
+        if (sprint.status == SprintStatus[SprintStatus.Active]) {
+            return "sprint-banner-active"
+        } else if (sprint.status == SprintStatus[SprintStatus.Pending]) {
+            return "sprint-banner-pending";
+        } else {
+            return "sprint-banner-complete"
+        }
     }
     return (
+        <ListGroupItem key={sprint.id} className={"flex-fill clickable " + getBannerColour()} onClick={() => router.push(`sprint/${sprint.id}`)}>
+            <span className={"me-5 align-items-center"}>{sprint.title}</span>
+            <Badge className={statusColour(sprint.status) + " me-5 align-items-center"}>{sprint.status}</Badge>
+        </ListGroupItem>
+
+    )
+}
+
+export const ShowSprintList = ({sprints}: {sprints: Sprint[] | undefined}) => {
+    const [hasActiveSprint, setHasActiveSprint] = useState<boolean>(true);
+
+    useEffect(() => {
+        const hasActive = sprints && sprints.find(sprint => sprint.status == SprintStatus[SprintStatus.Active]);
+        !!hasActive && setHasActiveSprint(true);
+    }, [sprints])
+    
+    return (
         <div>
-            <h2 className={"text-center text-white"}>All Sprints</h2>
+            <h2 className={"text-center text-muted mt-3 mb-4"}>All Sprints</h2>
             <ListGroup className={"text-center"}>
                 {sprints && sprints.map(sprint => 
                 <ListGroupItem key={sprint.id}>
-                    <span className={"me-5"}>{sprint.title}</span>
-                    <Badge className={statusColour(sprint.status) + " me-5"}>{sprint.status}</Badge>
-                    {!hasActiveSprint && sprint.status == SprintStatus[SprintStatus.Pending] && 
-                        <Button onClick={() => activateSprint(sprint.id)} className={"sign-up text-dark me-5"}>
-                            Start Sprint
-                        </Button>}
+
+                    <SprintBannerOnBoard sprint={sprint} activeSprintExists={hasActiveSprint} />
+ 
                 </ListGroupItem>)}
             </ListGroup>
         </div>
@@ -66,9 +151,9 @@ const ShowSprintList = ({sprints, hasActiveSprint}: {sprints: Sprint[] | undefin
     )
 }
 
-export const SprintView = ({isAdmin}: {isAdmin: boolean}) => {
-    const user = useAuthContext();
-    const [showModal, setShowModal] = useState<boolean>(false);
+export const SprintView = () => {
+    const { user, isAdmin } = useAuthContext();
+    const router = useRouter();
     const [sprints, setSprints] = useState<Sprint[]>();
     const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 
@@ -79,30 +164,35 @@ export const SprintView = ({isAdmin}: {isAdmin: boolean}) => {
             setSprints(sprints)
             const activeSprint = sprints && sprints.find(s => s.status == SprintStatus[SprintStatus["Active"]]);
             activeSprint && setActiveSprint(activeSprint);
-            // console.log(sprints);
+            activeSprint && router.push(`/sprint/${activeSprint.id}`);
             
-            // setTasks(tasks);
             // setLoading(false);
         } 
         fetchData().catch(error => console.log(error));
         
-    }, [activeSprint]);
+    }, [sprints, activeSprint]);
     
     return (
         <>
             {!activeSprint && (
                 <section>
-                    <Button className="btn text-white" onClick={() => setShowModal(true)}>
-                        Create a Sprint
-                    </Button>
-                    <CreateFirstSprint showModal={showModal} setShowModal={setShowModal} />
-                    <ShowSprintList sprints={sprints} hasActiveSprint={!!activeSprint}/>
+                    <CreateSprintButton />
+                    <ShowSprintList sprints={sprints} />
                 </section>
 
             )}
-            
-            {activeSprint && <SprintBoard isAdmin={isAdmin} sprint={activeSprint} />}
+        </>
+    )
+}
 
+export const CreateSprintButton = () => {
+    const [showModal, setShowModal] = useState<boolean>(false);
+    return (
+        <>
+            <Button className="btn bg-warning text-black" onClick={() => setShowModal(true)}>
+                Create a Sprint
+            </Button>
+            <CreateFirstSprint showModal={showModal} setShowModal={setShowModal} />
         </>
     )
 }
@@ -132,18 +222,21 @@ const CreateFirstSprint = (props: CreateProps) => {
     )
 }
 
-const completeSprint = async (sprintId: string) => {
+const completeSprint = async (sprintId: number) => {
     const endDate = new Date();
-    const res = await fetch(`/api/sprints/${sprintId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            endDate
-        }),
-      });
-      console.log(res)
+    const status = SprintStatus[SprintStatus.Complete]
+    return updateSprint(sprintId, status, endDate);
+    // const res = await fetch(`/api/sprints/${sprintId}`, {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //         endDate,
+    //         status
+    //     }),
+    //   });
+    //   console.log(res)
   
         // if (res.status == 500) {
         //   const errorMessage = await res.json();
