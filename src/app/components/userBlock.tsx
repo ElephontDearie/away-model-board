@@ -58,7 +58,7 @@ const AuthorisedUserComponent = (props: {displayName: string,
     // setUser: Dispatch<SetStateAction<User | null>>
   }): JSX.Element => {
 
-  const user = useContext(AuthContext);
+  const { user, isAdmin } = useAuthContext();
 
   return (
     <div className="container text-end">
