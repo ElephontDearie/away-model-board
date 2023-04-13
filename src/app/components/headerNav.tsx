@@ -47,7 +47,7 @@ export const SprintList = () => {
 }
 
 export const BacklogNavigation = () => {
-    const user = useAuthContext();
+    const { user, isAdmin } = useAuthContext();
     const router = useRouter();
 
     return (

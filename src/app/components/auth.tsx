@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, ReactHTMLElement, SetStateAction, useEffect, useState } from "react";
 import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap"
 // import firebase from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User, deleteUser, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User, deleteUser } from 'firebase/auth';
 // import { getAuth as adminAuth} from 'firebase-admin/auth';
 // import { initializeApp } from "firebase-admin/app";
 import firebase_app from "../firebase/firebase_config";
@@ -25,16 +25,16 @@ export const deleteUserAccount = async (user: User) => {
   // user deleted confirmation modal
 }
 
-export const isAdminUser = async () => {
-  const user = getAuth(firebase_app).currentUser;
-  if (user) {
-    const idToken = await user?.getIdTokenResult(true);
-    const claims = idToken?.claims;
-    const isAdmin = await claims['admin'] == true;
-    return isAdmin;
-  }
-  return false;
-} 
+// export const isAdminUser = async () => {
+//   const user = getAuth(firebase_app).currentUser;
+//   if (user) {
+//     const idToken = await user?.getIdTokenResult(true);
+//     const claims = idToken?.claims;
+//     const isAdmin = await claims['admin'] == true;
+//     return isAdmin;
+//   }
+//   return false;
+// } 
 
 export const signOutUser = async () => {
   try {
@@ -92,7 +92,6 @@ const authoriseUser = async(email: string, password: string,
             setError('Please sign up to create a new account.')
           }
           
-        
         } else if (error.code == 'auth/wrong-password') {
           setError('Incorrect login details. Please try again.')
         } else if (error.code == 'auth/user-not-found') {

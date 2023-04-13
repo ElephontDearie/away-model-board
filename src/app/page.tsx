@@ -3,29 +3,26 @@
 // import styles from './page.module.css'
 import Image from "next/image";
 import "./sass/board.scss";
-
-import { Provider } from 'react-redux';
-// import store from './redux/store';
-import SprintBoard from './components/board'
-import Header from './components/userBlock';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthContext } from './context/AuthContext';
-import { isAdminUser } from './components/auth';
 import { SprintView } from "./components/sprint";
+import { LoadingPage } from "./components/load";
 
 
 // const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const { user, isAdmin } = useAuthContext();
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // useEffect(() => {
 
-  //   isAdminUser().then(r => {
-  //     // console.log('page.tsx admin: ' +isAdmin)
-  //     setIsAdmin(r)
-  //   })
-  // }, [user, isAdmin])
+  // Load for 3 seconds while user is fetched from AuthContext
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000); 
+  }, []);
+
 
   // useEffect(() => {
   //   // import("bootstrap/dist/js/bootstrap");
@@ -37,9 +34,17 @@ export default function Home() {
     // <h1 className={inter.className}>Sprint Board</h1>
     // <main className='board'>  
     <main>
-      {!user && <UserLessDisplay />}
+      {loading && <LoadingPage />}
+      {!loading && 
+        <>
+          {user && <SprintView />}
+          {!user && <UserLessDisplay />}
+        </>
 
-      {user && <SprintView />}
+      }
+      {/* {!user && <UserLessDisplay />}
+
+      {user && <SprintView />} */}
 
       {/* <h1 className="display-5 fw-bold text-center">Away Project Tracker</h1> */}
 

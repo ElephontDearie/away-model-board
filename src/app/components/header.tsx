@@ -4,9 +4,7 @@ import "../sass/header.scss";
 import UserBlock from "./userBlock";
 import { CreateSprintButton } from "./sprint";
 const Header = () => {
-    // const router = useRouter();
 
-  
       return (
         <header className="p-3 bg-dark text-white">
           <div className="container">

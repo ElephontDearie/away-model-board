@@ -9,6 +9,7 @@ import { Sprint, Task } from "@prisma/client";
 import { SprintStatus } from "../components/sprint";
 import { fetchSprints } from "../handlers/sprint";
 import { ErrorModal, Outcome, SuccessModal } from "../components/userInfo";
+import { LoadingPage } from "../components/load";
 
 export default function Backlog() {
     const {user, isAdmin} = useAuthContext()
@@ -25,9 +26,7 @@ export default function Backlog() {
         const fetchData = async () => {
           const response = await fetchTasks();
           const tasks: Task[] = await response.json();
-          setTasks(tasks);
-          setLoading(false);
-          
+          setTasks(tasks);          
         } 
 
         const setActive = async () => {
@@ -41,6 +40,7 @@ export default function Backlog() {
         }
         fetchData().catch(error => console.log(error));
         setActive().catch(error => console.log(error));
+        setLoading(false);
       }, [tasks, activeSprintExists]);
 
       const activeSprintHasTask = (taskSprintId: number): boolean => activeSprintId == taskSprintId;
@@ -61,37 +61,40 @@ export default function Backlog() {
       }
 
     return (
-        <main>
-            <h1 className={"text-center mt-3"}>Backlog</h1>
+        <>
+            {loading && <LoadingPage />}
+            {!loading && <main>
+                <h1 className={"text-center mt-3"}>Backlog</h1>
 
-            {user && user.displayName && <AddTaskForm authorId={user.displayName} />}
-            <ListGroup>
-                {tasks && tasks.map(task => 
-                    <ListGroup horizontal style={{ display: 'flex' }} className={"d-flex flex-fill w-100"} key={task.id}>
+                {user && user.displayName && <AddTaskForm authorId={user.displayName} />}
+                <ListGroup>
+                    {tasks && tasks.map(task => 
+                        <ListGroup horizontal style={{ display: 'flex' }} className={"d-flex flex-fill w-100"} key={task.id}>
 
-                        <ListGroupItem key={`title-${task.id}`} onClick={() => setShowTaskModal(true)} className="flex-fill">
-                            <div>{task.title}</div>
-                            <EditModal task={task} setShowModal={setShowTaskModal} showModal={showTaskModal} />
-                        </ListGroupItem>
-                        {activeSprintExists && !activeSprintHasTask(task.sprintId) && task.status != TaskStatus[TaskStatus.Done] &&
-
-                            <ListGroupItem key={`active-${task.id}`} className="flex-fill-1">
-                                <Button onClick={() => sendToActiveSprint(task.id)}>
-                                    Add to active sprint
-                                </Button>
+                            <ListGroupItem key={`title-${task.id}`} onClick={() => setShowTaskModal(true)} className="flex-fill">
+                                <div>{task.title}</div>
+                                <EditModal task={task} setShowModal={setShowTaskModal} showModal={showTaskModal} />
                             </ListGroupItem>
-                        }
-                        {task.id == outcome?.taskId && 
-                            <div>
-                                <SuccessModal key={`active-success-${task.id}`} message="Added to the currently active sprint!" showMessage={outcome?.result == Outcome.Success} setShowMessage={setShowMessage}/>
-                                <ErrorModal key={`active-failure-${task.id}`} message={outcome?.message || "Could not add to the currently active sprint."} showMessage={outcome?.result == Outcome.Error} setShowMessage={setShowMessage} />       
-                            </div>
-                        }
-                        </ListGroup>
-                    
-                )}
-            </ListGroup>
-        </main>
+                            {activeSprintExists && !activeSprintHasTask(task.sprintId) && task.status != TaskStatus[TaskStatus.Done] &&
+
+                                <ListGroupItem key={`active-${task.id}`} className="flex-fill-1">
+                                    <Button onClick={() => sendToActiveSprint(task.id)}>
+                                        Add to active sprint
+                                    </Button>
+                                </ListGroupItem>
+                            }
+                            {task.id == outcome?.taskId && 
+                                <div>
+                                    <SuccessModal key={`active-success-${task.id}`} message="Added to the currently active sprint!" showMessage={outcome?.result == Outcome.Success} setShowMessage={setShowMessage}/>
+                                    <ErrorModal key={`active-failure-${task.id}`} message={outcome?.message || "Could not add to the currently active sprint."} showMessage={outcome?.result == Outcome.Error} setShowMessage={setShowMessage} />       
+                                </div>
+                            }
+                            </ListGroup>
+                        
+                    )}
+                </ListGroup>
+            </main>}
+        </>
 
 
     )

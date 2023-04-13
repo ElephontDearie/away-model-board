@@ -9,6 +9,11 @@ export enum Outcome {
   Error
 }
 
+type OutcomeType = {
+  result: string;
+  message: string;
+}
+
 type OutcomeProps = {
     message: string;
     showMessage: boolean;
@@ -26,7 +31,6 @@ interface ConfirmProps extends CrudConfirmProps {
 
 }
 export type CrudConfirmProps = {
-  // taskIdentifier: string;
   taskIdentifier: number;
   taskTitle: string;
   showModal: boolean;
@@ -70,11 +74,6 @@ export const ConfirmDeleteModal = (props: CrudConfirmProps) => {
   return <ConfirmModal {...confirmProps}  />
 }
 
-type OutcomeType = {
-  result: string;
-  message: string;
-}
-
 const ConfirmModal = (props: ConfirmProps) => {
   const [outcome, setOutcome] = useState<OutcomeType>();
   const [showOutcome, setShowOutcome] = useState<boolean>(false);
@@ -112,7 +111,7 @@ const ConfirmModal = (props: ConfirmProps) => {
           <Modal.Title>Confirm {props.confirmOperationNoun} of Task {props.taskIdentifier}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          This will {props.confirmOperationVerb} Task {props.taskIdentifier} titled: 
+          This will {props.confirmOperationVerb} task id {props.taskIdentifier} titled: 
           <p className="taskTitleConfirm">{props.taskTitle}</p> 
         </Modal.Body>
         <Modal.Footer>

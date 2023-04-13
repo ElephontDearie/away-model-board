@@ -11,8 +11,8 @@ import { fetchSprintWithId, fetchSprints } from '../../handlers/sprint';
 import { CompleteSprint } from '../../api/sprints/[id]/route';
 import { Sprint, Task } from '@prisma/client';
 import { SprintBannerOnBoard, SprintStatus } from '../../components/sprint';
-import { isAdminUser } from '@/app/components/auth';
 import { SprintList } from '@/app/components/headerNav';
+import { LoadingPage } from '@/app/components/load';
 
 type SprintProps = {
 //   sprint: Sprint;
@@ -44,13 +44,10 @@ function Board({params}: {params: {id: string}}) {
     // const [draggedIssue, setDraggedIssue] = useState<null | InputTask>(null);
 
     useEffect(() => {
-        // dispatch(fetchTasks());
-        setLoading(true);
         const fetchData = async () => {
         const response = await fetchSprintWithId(sprintId);
         const sprintWithTasks: CompleteSprint = await response.json();
         setSprint(sprintWithTasks.sprint);
-
         const tasks: Task[] = sprintWithTasks.tasks;
         setShownTasks(tasks);
         
@@ -98,25 +95,28 @@ function Board({params}: {params: {id: string}}) {
         setDraggedIssue(null);
     };
     return (
-        <div>
-        {sprint && <SprintBannerOnBoard sprint={sprint} activeSprintExists={activeSprintExists} />}
-        {user && user.displayName && <AddTaskForm authorId={user.displayName} sprintId={sprintId} />}
-        <div className='container-fluid'>
+        <>
+            {loading && <LoadingPage />}
+            {!loading && <div>
+                {sprint && <SprintBannerOnBoard sprint={sprint} activeSprintExists={activeSprintExists} />}
+                {user && user.displayName && <AddTaskForm authorId={user.displayName} sprintId={sprintId} />}
+                <div className='container-fluid'>
 
-            <div className="row">
-            {columns.map(col => 
-                <div key={col.valueOf()} 
-                className="col sprint-col text-white border border-white h4"
-                onDragOver={event => handleDragOver(event)}
-                onDrop={event => handleDrop(event, col)}>
-                {col}
-                {/* {loading && <h2>loading...</h2>} */}
-                {renderColItems(col)}
+                    <div className="row">
+                        {columns.map(col => 
+                            <div key={col.valueOf()} 
+                                className="col sprint-col text-white border border-white h4"
+                                onDragOver={event => handleDragOver(event)}
+                                onDrop={event => handleDrop(event, col)}>
+                                {col}
+                                {renderColItems(col)}
+                            </div>
+                        )}
+                    </div>
                 </div>
-            )}
-            </div>
-        </div>
-        </div>
+            </div>}
+        </>
+        
     );
 }
     

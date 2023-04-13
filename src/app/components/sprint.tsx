@@ -1,16 +1,14 @@
 "use client";
-import { Dispatch, RefAttributes, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { ErrorModal, SuccessModal } from "./userInfo";
 import { Badge, Button, ListGroup, ListGroupItem, Modal, Overlay, OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 import { createSprint, fetchSprints, updateSprint } from "../handlers/sprint";
-import SprintBoard from "./board";
-import { isAdminUser } from "./auth";
 import { Sprint } from "@prisma/client";
 import "../sass/header.scss";
 import "../sass/board.scss";
-import Board from "../sprint/[id]/page";
 import { useRouter } from "next/navigation";
+import { LoadingPage } from "./load";
 
 
 
@@ -18,15 +16,6 @@ export enum SprintStatus {
     'Pending',
     'Active',
     'Complete'
-}
-
-type InputSprint = {
-    sprintId: string;
-    title: string;
-    status: string;
-    goal: string;
-    startDate: string;
-    endDate?: string;
 }
 
 const statusColour = (status: string) => {
@@ -89,8 +78,6 @@ export const SprintBannerOnBoard = ({sprint, activeSprintExists}: {sprint: Sprin
                 {isPending &&
                     <OverlayTrigger placement="left" 
                     delay={{ show: 250, hide: 400 }}
-                    // show={disabledArgs()}
-                    // trigger="hover"
                     overlay={tooltipWarning}>
                         <span className="d-inline-block">
                         <Button size="sm" onClick={() => availableSprintAction()} disabled={disabledArgs()}
@@ -156,6 +143,7 @@ export const SprintView = () => {
     const router = useRouter();
     const [sprints, setSprints] = useState<Sprint[]>();
     const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -164,9 +152,11 @@ export const SprintView = () => {
             setSprints(sprints)
             const activeSprint = sprints && sprints.find(s => s.status == SprintStatus[SprintStatus["Active"]]);
             activeSprint && setActiveSprint(activeSprint);
-            activeSprint && router.push(`/sprint/${activeSprint.id}`);
             
-            // setLoading(false);
+
+            activeSprint && router.push(`/sprint/${activeSprint.id}`);
+            setLoading(false);
+            
         } 
         fetchData().catch(error => console.log(error));
         
@@ -174,11 +164,12 @@ export const SprintView = () => {
     
     return (
         <>
-            {!activeSprint && (
-                <section>
-                    <CreateSprintButton />
-                    <ShowSprintList sprints={sprints} />
-                </section>
+            {loading && <LoadingPage />}
+            {!activeSprint && !loading && (
+                    <section>
+                        <CreateSprintButton />
+                        <ShowSprintList sprints={sprints} />
+                    </section>
 
             )}
         </>
@@ -186,10 +177,11 @@ export const SprintView = () => {
 }
 
 export const CreateSprintButton = () => {
+    const {user, isAdmin} = useAuthContext();
     const [showModal, setShowModal] = useState<boolean>(false);
     return (
         <>
-            <Button className="btn bg-warning text-black" onClick={() => setShowModal(true)}>
+            <Button className="btn bg-warning text-black" onClick={() => setShowModal(true)} disabled={!user}>
                 Create a Sprint
             </Button>
             <CreateFirstSprint showModal={showModal} setShowModal={setShowModal} />

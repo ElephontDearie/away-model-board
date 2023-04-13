@@ -10,8 +10,8 @@ function AboutInfoBox() {
                 <Card.Body className="text-black">
                     <Card.Title as="h1" className="text-white">About Away Team Tracker</Card.Title>
                     
-                    <div className="mt-3"> 
-                        <div>This site was created to track the progress of sprint work in the away model framework.
+                    <div className="mt-4 fw-bold"> 
+                        <div>This site was created to track the progress of sprint tasks while working in the Away model framework.
                         This is where a team develops and works on another teams's codebase without owning any piece.</div>
                         <div>This development team is called the Away team and the owning team is known as the Host team.</div>
                         <div>
@@ -21,7 +21,7 @@ function AboutInfoBox() {
                         </div>
                     </div>
 
-                    <Card.Subtitle as="h2" className="mt-5">Navigation</Card.Subtitle>
+                    <Card.Subtitle as="h2" className="mt-5 mb-4">Navigation</Card.Subtitle>
                         <div>
                             
                             <div><Badge>Backlog</Badge>: Here all the tasks in all sprints are viewable. New tasks can also be created here.</div>
@@ -31,9 +31,8 @@ function AboutInfoBox() {
                             <div><Badge>Home</Badge>: Clicking Home or the site logo intentionally directs to an active sprint or to a list of sprints 
                                     conducted through the site.</div>
                         </div>
-                        <Card.Subtitle as="h2" className="mt-5">FAQs</Card.Subtitle>
+                        <Card.Subtitle as="h2" className="mt-5 mb-4">FAQs</Card.Subtitle>
 
-                        {/* <div> */}
                             <ListGroup>
                                 <ListGroupItem>
                                     <div>
@@ -46,7 +45,6 @@ function AboutInfoBox() {
                                
                                     </ListGroupItem>
                             </ListGroup>
-                        {/* </div> */}
                         
 
                     
