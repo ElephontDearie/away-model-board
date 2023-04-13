@@ -1,8 +1,10 @@
 #!/bin/bash
 cd /home/ubuntu/away-model-board
-which node
-sudo npm i -g npm@latest
-which node
+node -v
+nvm -v
+nvm install 18.15.0
+nvm alias default 18.15.0
+node -v
 git pull
 rm -rf node_modules yarn.lock
 yarn install &&
