@@ -48,8 +48,13 @@ Install mimimum stable node version 18.15.0
 ```bash
 npm install 18.15.0
 ```
-#### Prisma server 
-```npx prisma init --datasource-provider sqlite```
+
+##### On a new host, run these commands to set up the prisma database
 ```npx prisma migrate dev --name away-tracker```
 ```npx prisma generate```
 ```npm run build```
+
+### pm2 when a new host is used to persist the production server.
+`pm2 start "yarn start" --name away-model-tracker-board -- start -p 3000`
+### restore pm2 instances on reboot
+`pm2 resurrect`
