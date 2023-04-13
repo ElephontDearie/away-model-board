@@ -43,7 +43,7 @@ export default function Backlog() {
         setLoading(false);
       }, [tasks, activeSprintExists]);
 
-      const activeSprintHasTask = (taskSprintId: number): boolean => activeSprintId == taskSprintId;
+      const activeSprintHasTask = (taskSprintId: number | null): boolean => activeSprintId == taskSprintId;
 
       const sendToActiveSprint = async (taskId: number) => {
         try {

@@ -12,7 +12,8 @@ function AboutInfoBox() {
                     
                     <div className="mt-4 fw-bold"> 
                         <div>This site was created to track the progress of sprint tasks while working in the Away model framework.
-                        This is where a team develops and works on another teams's codebase without owning any piece.</div>
+                        This is where a team develops and works on another teams&apos;s codebase without owning any piece.
+                        </div>
                         <div>This development team is called the Away team and the owning team is known as the Host team.</div>
                         <div>
                             Since code merge necessarily requires approval from both teams, an extra sprint column named 
@@ -20,7 +21,6 @@ function AboutInfoBox() {
                             to track where collaboration and escalation is required to ensure sprint progress.
                         </div>
                     </div>
-
                     <Card.Subtitle as="h2" className="mt-5 mb-4">Navigation</Card.Subtitle>
                         <div>
                             
