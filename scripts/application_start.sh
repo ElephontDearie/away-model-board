@@ -2,7 +2,7 @@
 cd /home/ubuntu/away-model-board
 node -v
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.bashrc
+export NVM_DIR="$HOME/.nvm"
 nvm -v
 nvm install 18.15.0
 nvm alias default 18.15.0

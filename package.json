@@ -34,7 +34,6 @@
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.6",
-    "@types/firebase": "^3.2.1",
     "next": "13.2.3",
     "prisma": "^4.11.0"
   }
