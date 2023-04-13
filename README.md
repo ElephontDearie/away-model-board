@@ -58,3 +58,9 @@ npm install 18.15.0
 `pm2 start "yarn start" --name away-model-tracker-board -- start -p 3000`
 ### restore pm2 instances on reboot
 `pm2 resurrect`
+
+### AWS CodeDeploy agent (required for CodePipeline deployments)
+### check status
+sudo service codedeploy-agent status
+### start service if not running
+sudo service codedeploy-agent start
