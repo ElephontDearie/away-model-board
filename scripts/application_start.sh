@@ -1,7 +1,6 @@
 #!/bin/bash
-cd /home/ec2-user/app-frontend
-npm run build
-pm2 start npm --name "sweetcollective" -- start
-pm2 startup
-pm2 save
-pm2 restart all
+cd /home/ubuntu/away-model-board
+git pull origin main
+yarn install &&
+yarn build &&
+pm2 restart away-model-tracker-board
