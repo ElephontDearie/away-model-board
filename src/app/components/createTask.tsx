@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TaskStatus } from "./task";
 import { ErrorModal, SuccessModal } from "./userInfo";
-import { Button, Form, FormGroup, FormLabel } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 
 export interface CreateTaskArgs extends AddTaskProps {
   title: string;

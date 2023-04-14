@@ -1,14 +1,9 @@
-// import { CreateSprintArgs } from "@/app/components/createSprint";
 import { PrismaClient, Sprint } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// interface CreateSprintRequest extends NextRequest {
-//   body: CreateSprintArgs
-// }
 
 type Override<T1, T2> = Omit<T1, keyof T2> & T2;
-// type CreateSprintRequest = Override<NextRequest, {body: CreateSprintArgs}>
 
 export async function POST(req: Request) {
   const { title, goal, status, startDate } = await req.json();

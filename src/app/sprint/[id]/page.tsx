@@ -1,59 +1,44 @@
 "use client";
-import { useRouter, useSearchParams } from 'next/navigation';
-import { SetStateAction, useEffect, useState } from 'react';
-import { InputTask, TaskItem, TaskStatus } from '../../components/task';
+import { useEffect, useState } from 'react';
+import { TaskItem, TaskStatus } from '../../components/task';
 import { AddTaskForm } from '../../components/createTask';
 
 import "../../sass/task.scss";
-import { fetchTasks, updateTask } from '../../handlers/task';
+import { updateTask } from '../../handlers/task';
 import { useAuthContext } from '../../context/AuthContext';
 import { fetchSprintWithId, fetchSprints } from '../../handlers/sprint';
 import { CompleteSprint } from '../../api/sprints/[id]/route';
 import { Sprint, Task } from '@prisma/client';
 import { SprintBannerOnBoard, SprintStatus } from '../../components/sprint';
-import { SprintList } from '@/app/components/headerNav';
 import { LoadingPage } from '@/app/components/load';
 
-type SprintProps = {
-//   sprint: Sprint;
-//   peerReview?: boolean;
-//   isAdmin: boolean;
-};
+
 
 function isColString(col: TaskStatus | string): col is string {
   return typeof col === 'string';
 }
 
-
-
 function Board({params}: {params: {id: string}}) {
     const { user, isAdmin } = useAuthContext();
     const sprintId = parseInt(params.id);
 
-    const peerReview = true;
-
     const [loading, setLoading] = useState<boolean>(true);
     const [shownTasks, setShownTasks] = useState<Task[] | null>(null);
     const [draggedIssue, setDraggedIssue] = useState<null | Task>(null);
-    //   const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [sprint, setSprint] = useState<Sprint | null> (null);
-    const [activeSprintExists, setActiveSprintExists] = useState<boolean>(true);
+    const [activeSprintExists, setActiveSprintExists] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-
-    // const [shownTasks, setShownTasks] = useState<InputTask[] | null>(null);
-    // const [draggedIssue, setDraggedIssue] = useState<null | InputTask>(null);
 
     useEffect(() => {
         const fetchData = async () => {
-        const response = await fetchSprintWithId(sprintId);
-        const sprintWithTasks: CompleteSprint = await response.json();
-        setSprint(sprintWithTasks.sprint);
-        const tasks: Task[] = sprintWithTasks.tasks;
-        setShownTasks(tasks);
-        
+            const response = await fetchSprintWithId(sprintId);
+            const sprintWithTasks: CompleteSprint = await response.json();
+            setSprint(sprintWithTasks.sprint);
+            const tasks: Task[] = sprintWithTasks.tasks;
+            setShownTasks(tasks);
         } 
 
-        const setActive = async () => {
+        const setActivePreExists = async () => {
             const response = await fetchSprints();
             const sprintList: Sprint[] = await response.json();
             const activeSprint = sprintList.find(sprint => sprint.status == SprintStatus[SprintStatus.Active])
@@ -61,16 +46,13 @@ function Board({params}: {params: {id: string}}) {
         }
 
         fetchData().catch(error => setError(error.message));
-        setActive().catch(error => setError(error.message))
+        setActivePreExists().catch(error => setError(error.message))
         setLoading(false);
 
-
-        // checkAdminPrivilege().catch(error => console.log(error))
     }, [sprint, shownTasks, user]);
 
 
     const columns: string[] = Object.values(TaskStatus).filter(isColString);
-    if (peerReview) columns.splice(4, 1);
 
     const renderColItems = (col: string) => {
         return shownTasks && shownTasks.filter(t => t.status.toString() == col)

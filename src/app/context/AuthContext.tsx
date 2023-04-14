@@ -6,7 +6,7 @@ import {
     getAuth,
     User,
     signOut,
-    IdTokenResult
+    IdTokenResult,
 } from 'firebase/auth';
 import firebase_app from '../firebase/firebase_config'
 
@@ -35,8 +35,8 @@ export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({children}: Props) => {
     const [user, setUser] = useState<User | null>(null);
-    const [isAdmin, setIsAdmin] = useState<boolean>(false);
-    const [idToken, setIdToken] = useState<IdTokenResult | undefined>(undefined);
+    // const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    // const [idToken, setIdToken] = useState<IdTokenResult | undefined>(undefined);
     const [givenContext, setGivenContext] = useState<GivenContext>({
         user: null,
         isAdmin: false,
@@ -48,32 +48,21 @@ export const AuthContextProvider = ({children}: Props) => {
     //     await signOut(auth);
     //     setUser(null);
     // };
-
+    
+    
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(async user => {
-            // setUser(user);
-            const idToken = await user?.getIdTokenResult(true);
-            // setIdToken(idToken);
+        const unsubscribe = auth.onAuthStateChanged(async authUser => {
+            setUser(authUser);
+            const idToken = await authUser?.getIdTokenResult(true);
             const isAdmin = await idToken?.claims['admin'] == true;
-            // setIsAdmin(isAdmin)
             setGivenContext({
-                user,
+                user: authUser,
                 isAdmin,
                 refreshedIdToken: idToken
             })
         })
         return unsubscribe;
-        // const unsubscribe = onAuthStateChanged(auth, (user) => {
-        //     if (user) {
-        //         setUser(user);
-        //     } else {
-        //         setUser(null);
-        //     }
-        //     setLoading(false);
-        // });
-
-        // return () => unsubscribe();
-    }, []);
+    }, [user]);
 
     return (
         <AuthContext.Provider value={givenContext}>

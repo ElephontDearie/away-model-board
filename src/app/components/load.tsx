@@ -19,3 +19,17 @@ export const LoadingPage = () => {
 
   );
 };
+
+export const GrowSpinner = () => {
+  return (
+    <section className="text-end text-right">
+      <Spinner animation='grow' size="sm"  style={{ height: "10px", width: "10px" }} className='mx-2'/>
+      <Spinner animation='grow'  style={{ height: "25px", width: "25px" }} className='mx-2' />
+      <Spinner animation='grow' style={{ height: "50px", width: "50px" }} className='mx-2' />
+    </section>
+
+
+  )
+}
+
+

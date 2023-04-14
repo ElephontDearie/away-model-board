@@ -1,17 +1,16 @@
 "use client";
-import { Button, Card, Dropdown, Modal } from "react-bootstrap"
-import { useRouter } from "next/navigation";
+import { Button, Dropdown } from "react-bootstrap"
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthContext } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { Sprint } from "@prisma/client";
 import { fetchSprints } from "../handlers/sprint";
-import { CreateSprintButton, SprintBanner, SprintStatus } from "./sprint";
+import { SprintBanner } from "./sprint";
 
 
 export const SprintList = () => {
-    const { user, isAdmin } = useAuthContext();
+    const { user } = useAuthContext();
     const [sprints, setSprints] = useState<Sprint[]>();
 
     useEffect(() => {
@@ -19,7 +18,6 @@ export const SprintList = () => {
             const response = await fetchSprints();
             const sprints: Sprint[] = await response.json();
             setSprints(sprints)
-            // setLoading(false);
         } 
         fetchData().catch(error => console.log(error));
     }, [sprints])
@@ -37,7 +35,6 @@ export const SprintList = () => {
                 {sprints && sprints.map(sprint => 
                         <Dropdown.Item href={`/sprint/${sprint.id}`} key={sprint.id}>
                             <SprintBanner sprint={sprint}/>
-                            {/* sprint.title */}
                         </Dropdown.Item>
 
                 )}
@@ -47,28 +44,24 @@ export const SprintList = () => {
 }
 
 export const BacklogNavigation = () => {
-    const { user, isAdmin } = useAuthContext();
-    const router = useRouter();
-
+    const { user } = useAuthContext();
     return (
-        <Button disabled={!user} onClick={() => router.push("/backlog")}>
-            Backlog
-        </Button> 
+        <Link href="/backlog" passHref>
+            <Button disabled={!user}>
+                Backlog
+            </Button> 
+        </Link>
+        
     )
 }
 
-export const LogoNavigation = () => {
-    const router = useRouter();
-    return (
+export const LogoImage = () => (
+    <Image
+        src="/sprintLogo.svg"
+        alt="board-logo"
+        width={200}
+        height={100}
+        priority={true}
+    />        
+)
 
-        <Image
-            src="/sprintLogo.svg"
-            alt="board-logo"
-            width={200}
-            height={100}
-            priority={true}
-            onClick={() => router.push("/")}
-        />
-
-    )
-}

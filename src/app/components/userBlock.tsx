@@ -5,71 +5,51 @@ import { AuthModal, signOutUser } from "./auth";
 import "../sass/header.scss"
 import { User, getAuth } from "firebase/auth";
 import firebase_app from "../firebase/firebase_config";
+import { Spinner } from "react-bootstrap";
+import { GrowSpinner } from "./load";
 
 
 const UserBlock = () => {
   const { user, isAdmin } = useAuthContext();
-  // const user = useContext(AuthContext);
-
 
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [showRegisterModal, setShowRegisterModal] = useState<boolean>(false);
   const [isRegister, setIsRegister] = useState<boolean>(false);
-  // const [displayName, setDisplayName] = useState<string>('');
-  const [userLoaded, setUserLoaded] = useState<boolean>(false);
-  // const [user, setUser] = useState<User | null>(useContext(AuthContext));
-
-  
-  // useEffect(() => {
-  //   // user?.displayName && setDisplayName(user.displayName)
-  //     const user = getAuth(firebase_app).currentUser;
-  //     console.log(user)
-  //     user && setUser(user)
-    
-  // }, [user])
-
+  const [loadBuffer, setLoadBuffer] = useState<boolean>(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoadBuffer(false);
+    }, 600); 
+  }, []);
 
     return (
         <div className="container">
-
-            {!user && <UnauthorisedComponent setIsRegister={setIsRegister}
+            {loadBuffer && <GrowSpinner/>}
+            {!loadBuffer && !user && <UnauthorisedComponent setIsRegister={setIsRegister}
                 setShowRegisterModal={setShowRegisterModal} 
                 setShowLoginModal={setShowLoginModal} />}
 
             <AuthModal setShowModal={showLoginModal ? setShowLoginModal : setShowRegisterModal} 
               showModal={showLoginModal ? showLoginModal: showRegisterModal} 
               isRegister={isRegister} 
-              // setDisplayName={setDisplayName} 
-              // setUser={setUser}
-              />
+            />
             {user && 
-            <AuthorisedUserComponent 
-              displayName={user.displayName || "New User"} 
-              // setDisplayName={setDisplayName} 
-              // setUser={setUser}
+              <AuthorisedUserComponent displayName={user.displayName || "New User"} 
               />}
 
         </div>
     );
   };
 
-const AuthorisedUserComponent = (props: {displayName: string, 
-    // setDisplayName: Dispatch<SetStateAction<string>>, 
-    // setUser: Dispatch<SetStateAction<User | null>>
+const AuthorisedUserComponent = (props: {displayName: string,
   }): JSX.Element => {
-
-  const { user, isAdmin } = useAuthContext();
-
   return (
     <div className="container text-end">
       <span className='text-white'>
-          <p>Hello {user?.displayName || props.displayName}</p>
+          <p>Hello {props.displayName}</p>
       </span>
       <button type="button" className="btn btn-outline-light me-2" onClick={() => {
-        signOutUser().then(() => {
-          // props.setDisplayName('');
-          // props.setUser(null);
-        });
+        signOutUser().catch(error => console.log(error))
       }}>
         Sign Out
       </button>

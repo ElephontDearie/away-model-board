@@ -70,10 +70,10 @@ export default function Backlog() {
                 <ListGroup>
                     {tasks && tasks.map(task => 
                         <ListGroup horizontal style={{ display: 'flex' }} className={"d-flex flex-fill w-100"} key={task.id}>
+                            <EditModal task={task} setShowModal={setShowTaskModal} showModal={showTaskModal} />
 
                             <ListGroupItem key={`title-${task.id}`} onClick={() => setShowTaskModal(true)} className="flex-fill">
                                 <div>{task.title}</div>
-                                <EditModal task={task} setShowModal={setShowTaskModal} showModal={showTaskModal} />
                             </ListGroupItem>
                             {activeSprintExists && !activeSprintHasTask(task.sprintId) && task.status != TaskStatus[TaskStatus.Done] &&
 

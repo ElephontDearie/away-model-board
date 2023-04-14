@@ -2,14 +2,13 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { ErrorModal, SuccessModal } from "./userInfo";
-import { Badge, Button, ListGroup, ListGroupItem, Modal, Overlay, OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
+import { Badge, Button, Form, ListGroup, ListGroupItem, Modal, Overlay, OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 import { createSprint, fetchSprints, updateSprint } from "../handlers/sprint";
 import { Sprint } from "@prisma/client";
 import "../sass/header.scss";
 import "../sass/board.scss";
 import { useRouter } from "next/navigation";
 import { LoadingPage } from "./load";
-
 
 
 export enum SprintStatus {
@@ -35,7 +34,7 @@ export const SprintBanner = ({sprint}: {sprint: Sprint}) => {
 export const SprintBannerOnBoard = ({sprint, activeSprintExists}: {sprint: Sprint, activeSprintExists: boolean}) => {
     const isClosed = sprint.status == SprintStatus[SprintStatus.Complete];
     const isPending = sprint.status == SprintStatus[SprintStatus.Pending];
-    const isActive = sprint.status == SprintStatus[SprintStatus.Active];
+    const isActive = sprint.status == SprintStatus[SprintStatus.Active];    
 
     const activateSprint = async (sprintId: number) => {
         return await updateSprint(sprintId, SprintStatus[SprintStatus.Active])
@@ -71,11 +70,11 @@ export const SprintBannerOnBoard = ({sprint, activeSprintExists}: {sprint: Sprin
         <ListGroup horizontal className={"text-center d-flex flex-fill"}>
             <SingleSprintBanner sprint={sprint} />
             {!isClosed && <ListGroupItem>
-                {!isPending && 
+                {!isPending || (isPending && !activeSprintExists) && 
                     <Button size="sm" onClick={() => availableSprintAction()} disabled={disabledArgs()}
                     className={statusColour(sprint.status)}>{getSprintActionLabel()}</Button>
                 }
-                {isPending &&
+                {isPending && activeSprintExists &&
                     <OverlayTrigger placement="left" 
                     delay={{ show: 250, hide: 400 }}
                     overlay={tooltipWarning}>
@@ -115,7 +114,7 @@ const SingleSprintBanner = ({sprint}: {sprint: Sprint}) => {
 }
 
 export const ShowSprintList = ({sprints}: {sprints: Sprint[] | undefined}) => {
-    const [hasActiveSprint, setHasActiveSprint] = useState<boolean>(true);
+    const [hasActiveSprint, setHasActiveSprint] = useState<boolean>(false);
 
     useEffect(() => {
         const hasActive = sprints && sprints.find(sprint => sprint.status == SprintStatus[SprintStatus.Active]);
@@ -124,7 +123,7 @@ export const ShowSprintList = ({sprints}: {sprints: Sprint[] | undefined}) => {
     
     return (
         <div>
-            <h2 className={"text-center text-muted mt-3 mb-4"}>All Sprints</h2>
+            <h2 className={"text-center mt-3 mb-4"}>All Sprints</h2>
             <ListGroup className={"text-center"}>
                 {sprints && sprints.map(sprint => 
                 <ListGroupItem key={sprint.id}>
@@ -166,10 +165,7 @@ export const SprintView = () => {
         <>
             {loading && <LoadingPage />}
             {!activeSprint && !loading && (
-                    <section>
-                        <CreateSprintButton />
-                        <ShowSprintList sprints={sprints} />
-                    </section>
+                <ShowSprintList sprints={sprints} />
 
             )}
         </>
@@ -184,7 +180,7 @@ export const CreateSprintButton = () => {
             <Button className="btn bg-warning text-black" onClick={() => setShowModal(true)} disabled={!user}>
                 Create a Sprint
             </Button>
-            <CreateFirstSprint showModal={showModal} setShowModal={setShowModal} />
+            <CreateSprint showModal={showModal} setShowModal={setShowModal} />
         </>
     )
 }
@@ -194,57 +190,27 @@ type CreateProps = {
     setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const CreateFirstSprint = (props: CreateProps) => {
-
-    return (
-        <Modal show={props.showModal} onHide={() => props.setShowModal(prev => false)} backdrop='static' keyboard={false}>
+const CreateSprint = (props: CreateProps) => (
+    <Modal show={props.showModal} onHide={() => props.setShowModal(prev => false)} backdrop='static' keyboard={false}>
         <Modal.Header closeButton>
-          <Modal.Title>Creating new Sprint</Modal.Title>
+        <Modal.Title>Creating new Sprint</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AddSprintForm />
+            <AddSprintForm />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => props.setShowModal(prev => false)}>
-            Cancel
-          </Button>
-          {/* <Button variant="primary" onClick={() => crudOperation()}>Confirm</Button> */}
+            <Button variant="secondary" onClick={() => props.setShowModal(prev => false)}>
+                Cancel
+            </Button>
         </Modal.Footer>
-      </Modal>
-    )
-}
+    </Modal>
+)
+
 
 const completeSprint = async (sprintId: number) => {
     const endDate = new Date();
     const status = SprintStatus[SprintStatus.Complete]
     return updateSprint(sprintId, status, endDate);
-    // const res = await fetch(`/api/sprints/${sprintId}`, {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //         endDate,
-    //         status
-    //     }),
-    //   });
-    //   console.log(res)
-  
-        // if (res.status == 500) {
-        //   const errorMessage = await res.json();
-        //   setOutcomeMessage(errorMessage)
-        //   setShowError(true);
-        //   setTimeout(() => {
-        //     setShowError(false)
-        //   }, 5000)
-        // } else {
-        //   setOutcomeMessage(`Task named "${title}" was successfully added to the sprint!`)
-        //   setShowSuccess(true);
-        //   setTimeout(() => {
-        //     setShowSuccess(false)
-        //   }, 5000)
-        // }
-
 }
 
 export type CreateSprintArgs = {
@@ -296,11 +262,17 @@ export const AddSprintForm = () => {
   
     return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="title" placeholder="Title" required />
-        <input type="text" name="goal" placeholder="Goal" required />
-        <button type="submit">Create Sprint</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+            <Form.Label>Sprint Title:</Form.Label>
+            <Form.Control type='text' name='title' placeholder="Title" required/>
+        </Form.Group>
+        <Form.Group>
+            <Form.Label>Sprint Goal:</Form.Label>
+            <Form.Control type='text' name='goal' placeholder="Goal" required/>
+        </Form.Group>
+        <Button type="submit">Create Sprint</Button>
+      </Form>
   
       <ErrorModal setShowMessage={setShowError} showMessage={showError} message={outcomeMessage}/>
       <SuccessModal setShowMessage={setShowSuccess} showMessage={showSuccess} message={outcomeMessage}/>

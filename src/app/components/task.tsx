@@ -17,7 +17,7 @@ export enum TaskStatus {
     'Blocked', 
     'In Progress', 
     'In Code Review', 
-    'In Peer Code Review', 
+    'In Peer Review', 
     'Deployed', 
     'Done'
 }
@@ -32,8 +32,6 @@ export type InputTask = {
 
 type taskOptions = {
     peerTeam: boolean,
-    // task: InputTask,
-    // setDraggedIssue: Dispatch<SetStateAction<InputTask | null>>,
     task: Task,
     setDraggedIssue: Dispatch<SetStateAction<Task | null>>,
     isAdmin: boolean
@@ -49,20 +47,11 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
         taskTitle: task.title,
         showModal: showDeleteModal,
         setShowModal: setShowDeleteModal,
-        // operationMethod: deleteTask(task.id)
     }
 
     const handleDragStart = (event: any, task: SetStateAction<null | Task>) => {
         task && props.setDraggedIssue(task);
     };
-
-    const inputTask: InputTask = {
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        status: task.status
-    }
-    const taskNo: number = task.id;
 
 
     return (
@@ -95,19 +84,14 @@ const editableFields = (task: InputTask): Editable => ({
     description: task.description,
 })
 
-// TODO: Add taskId, sprint titles of sprints the task has been in, author, and created date.
+// TODO: Add taskId, sprint titles of sprints the task has been in, author, created date, and updated date.
 type Displayable = {
     status: string;
-    // author: string;
-    // created: string;
-    // lastUpdated: string;
 }
 
+// TODO: Add taskId, sprint titles of sprints the task has been in, author, created date, and updated date.
 const readableFields = (task: InputTask): Displayable => ({
     status: task.status.toString(),
-    // author: task.author,
-    // created: task.creationTime,
-    // lastUpdated: task.lastUpdatedTime
 })
 
 type EditProps = {
@@ -117,21 +101,19 @@ type EditProps = {
 }
 export const EditModal = (props: EditProps): JSX.Element => {
     const { task, showModal, setShowModal } = props;
-    const [showEditBox, setShowEditBox] = useState(false);
     const fields: Editable = editableFields(task);
     const readOnlyFields: Displayable = readableFields(task)
     const [updatedFields, setUpdatedFields] = useState<Editable>(fields);
 
 
     const updateTaskFields = (id: number, updatedFields: Editable) => {
-        updateEditableFields(task.id, updatedFields);
-        setShowModal(prev => false);
+        updateEditableFields(id, updatedFields);
+        setShowModal(false);
     }
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
         if (field == 'title') {
             updatedFields.title = e.target.value;
-        // } else if (field == 'status') {
-        //     updatedFields.status = e.target.value;
         } else {
             updatedFields.description = e.target.value;
         }
@@ -145,7 +127,7 @@ export const EditModal = (props: EditProps): JSX.Element => {
         </Modal.Header>
         <Modal.Body>
             {Object.entries(fields).map(([k, v], i) => 
-            <Form onSubmit={() => setShowEditBox(prev => false)} key={i} className='clearfix'>
+            <Form key={i} className='clearfix'>
 
                 <Form.Group>
                     <Form.Label>{k +': '}</Form.Label>
@@ -164,8 +146,6 @@ export const EditModal = (props: EditProps): JSX.Element => {
           </Button>
           <Button variant="primary" onClick={() => updateTaskFields(task.id, updatedFields)}>Save Changes</Button>
         </Modal.Footer>
-
-
     </Modal>
 )}
 

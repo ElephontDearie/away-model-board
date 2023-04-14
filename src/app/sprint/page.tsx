@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { CreateSprintButton, ShowSprintList, SprintStatus } from "../components/sprint";
+import { ShowSprintList, SprintStatus } from "../components/sprint";
 import { Sprint } from "@prisma/client";
 import { useState, useEffect } from "react";
 import { fetchSprints } from "../handlers/sprint";
