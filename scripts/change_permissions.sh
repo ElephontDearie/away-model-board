@@ -1,2 +1,2 @@
 pwd
-# chmod +x /scripts/*
+# chmod +x home/ubuntu/scripts/*
