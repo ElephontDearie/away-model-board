@@ -12,12 +12,24 @@ import { SprintBanner } from "./sprint";
 export const SprintList = () => {
     const { user } = useAuthContext();
     const [sprints, setSprints] = useState<Sprint[]>();
+    const [hasError, setHasError] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetchSprints();
             const sprints: Sprint[] = await response.json();
-            setSprints(sprints)
+            
+            if (response.status == 500) {
+                if (typeof sprints == "string") {
+                    setHasError(true);
+                    console.log(sprints);
+                } else if (sprints instanceof Error) {
+                    console.log(sprints.message)
+                }
+            } else {
+                setSprints(sprints)
+            }
+            
         } 
         fetchData().catch(error => console.log(error));
     }, [sprints])
@@ -26,7 +38,7 @@ export const SprintList = () => {
 
     return (
         <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="sprint-dropdown" disabled={!user}>
+            <Dropdown.Toggle variant="secondary" id="sprint-dropdown" disabled={!user || hasError}>
                 View Sprints
             </Dropdown.Toggle>
 

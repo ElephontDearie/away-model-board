@@ -2,21 +2,23 @@ import { PrismaClient, Task } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-type updateStatus = {
+type UpdateStatus = {
   status: string;
 }
-type updateSprint = {
+type UpdateSprint = {
   sprintId: number;
 }
 
-type updateFields = {
+type UpdateFields = {
   status: string,
   description: string,
   title: string
 }
+
+// Updating a task which already exists with fields of the type  UpdateStatus, UpdateSprint, or UpdateFields. 
 export async function PUT(req: Request, { params }: { params: { id: string } } ) {
     const id = parseInt(params.id);
-    const input: updateStatus | updateSprint | updateFields = await req.json();
+    const input: UpdateStatus | UpdateSprint | UpdateFields = await req.json();
 
     try {
       const updatedTask: Task = await prisma.task.update({
@@ -30,13 +32,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } } )
       status: 204
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return new Response(JSON.stringify('Error updating task'), {
       status: 500
     })
   }
 } 
 
+// Delete a task given its task ID
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id);
 
@@ -58,7 +61,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   }
 }
 
-// For retrieving a task with a particular id.
+// For retrieving a task with a particular ID.
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const id = parseInt(params.id);
   const isTaskId: boolean = await req.json();

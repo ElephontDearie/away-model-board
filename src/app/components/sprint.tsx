@@ -148,9 +148,23 @@ export const SprintView = () => {
         const fetchData = async () => {
             const response = await fetchSprints();
             const sprints: Sprint[] = await response.json();
-            setSprints(sprints)
-            const activeSprint = sprints && sprints.find(s => s.status == SprintStatus[SprintStatus["Active"]]);
-            activeSprint && setActiveSprint(activeSprint);
+            if (response.status == 500) {
+                setSprints(undefined);
+                if (typeof sprints == "string") {                    
+                    console.log(sprints);
+                } else if (sprints instanceof Error) {
+                    console.log(response)
+                    console.log(sprints.message)
+                }
+            } else {
+                setSprints(sprints)
+                const activeSprint = sprints && sprints.find(s => s.status == SprintStatus[SprintStatus["Active"]]);
+                activeSprint && setActiveSprint(activeSprint);
+                activeSprint && router.push(`/sprint/${activeSprint.id}`);
+            }
+            // setSprints(sprints)
+            // const activeSprint = sprints && sprints.find(s => s.status == SprintStatus[SprintStatus["Active"]]);
+            // activeSprint && setActiveSprint(activeSprint);
             
 
             activeSprint && router.push(`/sprint/${activeSprint.id}`);
