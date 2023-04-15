@@ -18,7 +18,8 @@ else
 fi
 
 node -v
-git pull origin master
+whoami
+git pull origin main
 yarn install &&
 echo "Beginning yarn build" &&
 yarn build 
