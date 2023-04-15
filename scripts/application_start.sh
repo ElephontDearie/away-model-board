@@ -1,4 +1,6 @@
 #!/bin/bash
+sudo -i -u ubuntu bash << EOF
+
 cd /home/ubuntu/away-model-board
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -19,3 +21,5 @@ yarn install &&
 echo "Beginning yarn build" &&
 yarn build &&
 pm2 restart away-model-tracker-board
+EOF
+echo "app_start script completed"
