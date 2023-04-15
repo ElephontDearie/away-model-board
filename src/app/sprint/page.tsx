@@ -7,7 +7,6 @@ import { fetchSprints } from "../handlers/sprint";
 
 function SprintView () {
     // const { user, isAdmin } = useAuthContext();
-    // const router = useRouter();
     const [sprints, setSprints] = useState<Sprint[]>();
     // const [activeSprint, setActiveSprint] = useState<Sprint | null>(null);
 

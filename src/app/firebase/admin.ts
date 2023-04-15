@@ -1,7 +1,7 @@
 import * as firebaseAdmin from "firebase-admin";
 
 
-const serviceAccount = "../../../../board-5ed22-firebase-adminsdk-zkrqy-118a432926.json"
+const serviceAccount = process.env.NEXT_PUBLIC_SERVICE_ACCOUNT_CONFIG_PATH as string;
 
 if (!firebaseAdmin.apps.length) {
 	firebaseAdmin.initializeApp({
