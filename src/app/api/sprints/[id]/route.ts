@@ -82,8 +82,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       status: 200
     });
   } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify('Error retrieving Sprint'), {
+    console.log(error);
+    return new Response('Error retrieving Sprint', {
       status: 500
     })
   }
