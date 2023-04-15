@@ -3,8 +3,6 @@ import { PrismaClient, Sprint } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
-type Override<T1, T2> = Omit<T1, keyof T2> & T2;
-
 export async function POST(req: Request) {
   const { title, goal, status, startDate } = await req.json();
   try {
@@ -15,7 +13,6 @@ export async function POST(req: Request) {
         status,
         startDate
       },
-
     });
 
     return new Response(JSON.stringify(newSprint), {
@@ -29,7 +26,7 @@ export async function POST(req: Request) {
         })
       }
     }
-    console.error(error);
+    console.log(error);
     return new Response(JSON.stringify('Error creating sprint'), {
       status: 500
     })
@@ -43,8 +40,8 @@ export async function GET(req: Request) {
       status: 200
     });
   } catch (error) {
-    console.error(error);
-    return new Response('Error fetching sprints', {
+    console.log(error);
+    return new Response(JSON.stringify(error), {
       status: 500
     })
   }

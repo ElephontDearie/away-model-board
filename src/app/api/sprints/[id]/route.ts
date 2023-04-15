@@ -1,18 +1,18 @@
 import { SprintStatus } from "@/app/components/sprint";
 import { PrismaClient, Sprint, Task } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
 
-type updateFields = {
+type UpdateFields = {
   endDate: string,
   status: string
 }
+
+// Updating a sprint with an endDate and status via the PUT HTTP method.
 export async function PUT(req: Request, { params }: { params: { id: string } } ) {
     const id = parseInt(params.id);
-    const input: updateFields = await req.json();
-    console.log(input)
+    const input: UpdateFields = await req.json();
 
     try {
       const updatedSprint: Sprint = await prisma.sprint.update({
@@ -27,7 +27,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } } )
     });
   } catch (error) {
     console.log(error);
-    return new Response(JSON.stringify('Error updating Sprint'), {
+    return new Response(JSON.stringify(error), {
       status: 500
     })
   }
