@@ -24,4 +24,10 @@ echo "Beginning yarn build" &&
 yarn build 
 
 if hash pm2 2>dev.null; then echo "pm2 exists"; else yarn global add pm2; fi
-pm2 restart away-model-tracker-board
+
+pwd
+if [[ pm2 desribe away-model-tracker-board == "" ]]; then
+    pm2 start "yarn start" --name away-model-tracker-board -- start -p 3000
+else
+    pm2 restart away-model-tracker-board
+fi
