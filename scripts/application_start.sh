@@ -21,5 +21,7 @@ node -v
 git pull
 yarn install &&
 echo "Beginning yarn build" &&
-yarn build &&
+yarn build 
+
+if hash pm2 2>dev.null; then echo "pm2 exists"; else yarn global add pm2; fi
 pm2 restart away-model-tracker-board
