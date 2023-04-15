@@ -1,12 +1,14 @@
 #!/bin/bash
-sudo -i -u ubuntu bash << EOF
-
 cd /home/ubuntu/away-model-board
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+if [ -d "${HOME}/.nvm/.git" ]; then 
+    echo "nvm installed"
+else 
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
 
 if [[ $(nvm ls | grep v18.15.0) == "" ]]; then
     nvm install v18.15.0
@@ -16,10 +18,7 @@ fi
 
 node -v
 git pull
-rm -rf node_modules yarn.lock
 yarn install &&
 echo "Beginning yarn build" &&
 yarn build &&
 pm2 restart away-model-tracker-board
-EOF
-echo "app_start script completed"
