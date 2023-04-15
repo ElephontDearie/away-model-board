@@ -26,8 +26,10 @@ yarn build
 if hash pm2 2>dev.null; then echo "pm2 exists"; else yarn global add pm2; fi
 
 pwd
-if [[ $(pm2 describe away-model-tracker-board == "") ]]; then
+if [[ $(echo sudo pm2 describe away-model-tracker-board == "") ]]; then
+    echo "Starting new process"
     pm2 start "yarn start" --name away-model-tracker-board -- start -p 3000
 else
+    echo "Restarting process"
     pm2 restart away-model-tracker-board
 fi
