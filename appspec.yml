@@ -3,5 +3,4 @@ os: linux
 hooks:
   ApplicationStart:
     - location: scripts/application_start.sh
-      timeout: 2100
-      runas: ubuntu
+      timeout: 2000
