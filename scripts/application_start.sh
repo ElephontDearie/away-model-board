@@ -21,7 +21,14 @@ node -v
 whoami
 sudo chown -R ${USER} /home/ubuntu/away-model-board
 git pull origin main
-yarn install &&
+yarn install
+
+if [ ! -d "/home/ubuntu/away-model-board/prisma/migrations" ]
+then
+    npx prisma migrate dev --name away-tracker
+    npx prisma generate
+fi
+
 echo "Beginning yarn build" &&
 yarn build 
 
