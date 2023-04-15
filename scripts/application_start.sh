@@ -19,6 +19,7 @@ fi
 
 node -v
 whoami
+sudo chown -R ${whoami} /home/ubuntu/away-model-board
 git pull origin main
 yarn install &&
 echo "Beginning yarn build" &&
@@ -26,11 +27,7 @@ yarn build
 
 if hash pm2 2>dev.null; then echo "pm2 exists"; else yarn global add pm2; fi
 
-pwd
-if [[ $(echo sudo pm2 describe away-model-tracker-board == "") ]]; then
-    echo "Starting new process"
-    pm2 start "yarn start" --name away-model-tracker-board -- start -p 3000
-else
-    echo "Restarting process"
-    pm2 restart away-model-tracker-board
-fi
+pm2 delete all
+echo "Starting new process"
+pm2 start "yarn start" --name away-model-tracker-board -- start -p 3000
+pm2 save
