@@ -18,7 +18,7 @@ else
 fi
 
 node -v
-git pull
+git pull origin master
 yarn install &&
 echo "Beginning yarn build" &&
 yarn build 
