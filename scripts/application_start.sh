@@ -19,7 +19,7 @@ fi
 
 node -v
 whoami
-sudo chown -R ${whoami} /home/ubuntu/away-model-board
+sudo chown -R ${USER} /home/ubuntu/away-model-board
 git pull origin main
 yarn install &&
 echo "Beginning yarn build" &&
