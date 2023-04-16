@@ -132,8 +132,8 @@ export const EditModal = (props: EditProps): JSX.Element => {
             </Form>
             )}
             {Object.entries(readOnlyFields).map(([k, v], i) => 
-                <Form.Group className="mt-3 m-1 p-2 text-white bg-dark">
-                    <Form.Label key={i} className="text-white bg-dark">{`${k}:  ${v}`}</Form.Label>
+                <Form.Group key={i} className="mt-3 m-1 p-2 text-white bg-dark">
+                    <Form.Label key={`label-${i}`} className="text-white bg-dark">{`${k}:  ${v}`}</Form.Label>
                 </Form.Group>
             )}
             

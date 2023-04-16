@@ -19,7 +19,6 @@ fi
 
 node -v
 sudo chown -R ${USER} /home/ubuntu/away-model-board
-rm -rf node_modules yarn.lock
 
 git pull origin main
 yarn install
@@ -30,7 +29,7 @@ then
     npx prisma generate
 fi
 
-echo "Beginning yarn build" &&
+echo "Beginning yarn build"
 yarn build 
 
 if hash pm2 2>dev.null; then echo "pm2 exists"; else yarn global add pm2; fi
