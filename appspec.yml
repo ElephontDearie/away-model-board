@@ -1,10 +1,6 @@
 version: 0.0
 os: linux
 hooks:
-  AfterInstall:
-    - location: scripts/after_install.sh
-      timeout: 180
-      runas: ubuntu
   ApplicationStart:
     - location: scripts/application_start.sh
       timeout: 900
