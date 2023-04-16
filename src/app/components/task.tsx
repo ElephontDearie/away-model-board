@@ -1,11 +1,6 @@
-import { useSelector, useDispatch } from 'react-redux';
-
-import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-
-import "../sass/task.scss"
 import { updateEditableFields } from '../handlers/task';
 import { Form } from 'react-bootstrap';
 import { ConfirmDeleteModal, CrudConfirmProps } from './userInfo';
@@ -23,10 +18,10 @@ export enum TaskStatus {
 }
 
 export type InputTask = {
-    id: number,
-    title: string,
-    description: string,
-    status: string //set as to-do on creation
+    id: number
+    title: string
+    description: string
+    status: string
 }
 
 
@@ -121,23 +116,26 @@ export const EditModal = (props: EditProps): JSX.Element => {
         setUpdatedFields(updatedFields)
     }
     return (
-    <Modal show={showModal} onHide={() => setShowModal(false)} backdrop='static' keyboard={false}>
+    <Modal show={showModal} onHide={() => setShowModal(false)} backdrop="static" keyboard={false}>
         <Modal.Header closeButton>
           <Modal.Title>Editing {task.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             {Object.entries(fields).map(([k, v], i) => 
-            <Form key={i} className='clearfix'>
+            <Form key={i} className="clearfix text-center">
 
                 <Form.Group>
-                    <Form.Label>{k +': '}</Form.Label>
-                    <Form.Control type='text' name='value' defaultValue={v} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, k)}/>
+                    <Form.Label className="bg-dark text-white m-1 p-2 rounded">{k +': '}</Form.Label>
+                    <Form.Control type="text" name="value" defaultValue={v} onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e, k)}/>
 
                 </Form.Group>
             </Form>
             )}
-            {Object.entries(readOnlyFields).map(([k, v], i) => <span key={i}>{k + ": " + v}</span>)}
-
+            {Object.entries(readOnlyFields).map(([k, v], i) => 
+                <Form.Group className="mt-3 m-1 p-2 text-white bg-dark">
+                    <Form.Label key={i} className="text-white bg-dark">{`${k}:  ${v}`}</Form.Label>
+                </Form.Group>
+            )}
             
         </Modal.Body>
         <Modal.Footer>

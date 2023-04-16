@@ -112,7 +112,7 @@ const ConfirmModal = (props: ConfirmProps) => {
         </Modal.Header>
         <Modal.Body>
           This will {props.confirmOperationVerb} task id {props.taskIdentifier} titled: 
-          <p className="taskTitleConfirm">{props.taskTitle}</p> 
+          <p className="task-title-confirm">{props.taskTitle}</p> 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => props.setShowModal(prev => false)}>

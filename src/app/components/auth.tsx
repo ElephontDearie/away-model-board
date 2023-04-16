@@ -1,9 +1,6 @@
-import { ChangeEvent, Dispatch, ReactHTMLElement, SetStateAction, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap"
-// import firebase from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, signOut, User, deleteUser } from 'firebase/auth';
-// import { getAuth as adminAuth} from 'firebase-admin/auth';
-// import { initializeApp } from "firebase-admin/app";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, User, deleteUser } from 'firebase/auth';
 import firebase_app from "../firebase/firebase_config";
 import { grantAdminRightsOnRegister } from "../handlers/auth";
 import { useAuthContext } from "../context/AuthContext";
@@ -17,24 +14,11 @@ const adminEmailAddresses = [
   'admin1@test.com',
   'test@test.com'
 ]
-const regEmailAddresses = [
-  's@test.com'
-]
+
+// TODO: Add User deleted confirmation modal
 export const deleteUserAccount = async (user: User) => {
   await deleteUser(user);
-  // user deleted confirmation modal
 }
-
-// export const isAdminUser = async () => {
-//   const user = getAuth(firebase_app).currentUser;
-//   if (user) {
-//     const idToken = await user?.getIdTokenResult(true);
-//     const claims = idToken?.claims;
-//     const isAdmin = await claims['admin'] == true;
-//     return isAdmin;
-//   }
-//   return false;
-// } 
 
 export const signOutUser = async () => {
   try {
@@ -43,7 +27,6 @@ export const signOutUser = async () => {
     console.log(req)
   } catch (error) {
     console.log(error)
-    //Error modal
   }
 }
 
@@ -59,7 +42,6 @@ const authoriseUser = async(email: string, password: string,
           await createUserWithEmailAndPassword(auth, email, password)
           : await signInWithEmailAndPassword(auth, email, password);
 
-          // auth.currentUser && await deleteUserAccount(auth.currentUser)
         if (isRegister && auth.currentUser) {
 
           updateProfile(auth.currentUser, {
@@ -106,14 +88,11 @@ type Props = {
     showModal: boolean;
     setShowModal: Dispatch<SetStateAction<boolean>>;
     isRegister: boolean;
-    // setDisplayName: Dispatch<SetStateAction<string>>;
-    // setUser: Dispatch<SetStateAction<User | null>>;
 }
 
 
 export const AuthModal = (props: Props) => {
     const {showModal, setShowModal, isRegister, 
-      // setDisplayName, setUser
     } = props;
     const [input, setInput] = useState({ username: '', email: '', password: ''});
     const [error, setError] = useState<null | string>(null);
@@ -128,11 +107,8 @@ export const AuthModal = (props: Props) => {
     const authorise = (email: string, password: string, displayName: string) =>  {
         authoriseUser(email, password, 
           isRegister, setError, setShowModal, 
-          // setDisplayName, 
           displayName, 
-          // setUser
-          )
-
+        )
     }
 
 

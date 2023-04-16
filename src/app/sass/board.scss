@@ -1,26 +1,30 @@
+/* Board background outside tasks should be light blue */
 .board {
-    background: rgb(200, 232, 233);
+    background: rgb(177, 219, 220);
     height: 100%;
-    
 }
 
+/* Sprint board background should be blue-purple */
 .sprint-col {
     background: rgb(57, 53, 129);
 }
-
+/* Active sprints should have a green banner */
 .sprint-banner-active {
     background: rgb(175, 233, 89);
 ;}
 
+/* Pending sprints should have a blue-green banner */
 .sprint-banner-pending {
     background: rgb(98, 170, 233);
     color: rgb(26, 23, 23);
 ;}
+
+/* Complete sprints should have a grey-white banner */
 .sprint-banner-complete {
     background: rgb(215, 217, 213);
 ;}
 
-
+/* Widen banner to fill up the screen horizontally */
 .banner-width {
     width: 100%
 }
@@ -36,7 +40,7 @@
     background-color: #f8f9fa; /* Change background color on hover */
 }
   
-  /* Add active effect */
+/* Add active effect */
 .clickable:active {
     background-color: #dee2e6; /* Change background color when item is clicked */
 }

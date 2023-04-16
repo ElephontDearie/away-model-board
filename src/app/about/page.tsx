@@ -7,7 +7,7 @@ import { useAuthContext } from "../context/AuthContext";
 function AboutInfoBox() {
     const {user, isAdmin} = useAuthContext()
     return (
-        <section className="text-center my-5 py-5">
+        <section className="board text-center my-5 py-5">
             <Card bg="info" text="white" className="info-box">
                 <Card.Body className="text-black">
                     <Card.Title as="h1" className="text-white">About Away Team Tracker</Card.Title>

@@ -1,11 +1,8 @@
 "use client";
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AuthContext, useAuthContext } from "../context/AuthContext";
 import { AuthModal, signOutUser } from "./auth";
 import "../sass/header.scss"
-import { User, getAuth } from "firebase/auth";
-import firebase_app from "../firebase/firebase_config";
-import { Spinner } from "react-bootstrap";
 import { GrowSpinner } from "./load";
 
 

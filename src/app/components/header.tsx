@@ -1,8 +1,8 @@
 import { BacklogNavigation, SprintList, LogoImage} from "./headerNav";
-import "../sass/header.scss";
 import UserBlock from "./userBlock";
 import { CreateSprintButton } from "./sprint";
-import Link from "next/link";
+import "../sass/header.scss";
+
 
 const Header = () => {
   return (

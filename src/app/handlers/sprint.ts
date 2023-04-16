@@ -19,6 +19,7 @@ export const fetchSprintWithId = async (id: number): Promise<Response> => {
     });
 }
 
+// Update sprint with a status or a status and endDate
 export const updateSprint = async (sprintId: number, sprintStatus: string, endDate?: Date): Promise<Response> => {
     let statusUpdate: StatusUpdate = {
         status: sprintStatus
@@ -33,6 +34,7 @@ export const updateSprint = async (sprintId: number, sprintStatus: string, endDa
     });
 }
 
+// Create a new sprint with the POST HTTP method
 export const createSprint = async (pendingSprint: CreateSprintArgs) => {
     return await fetch('/api/sprints', {
         method: 'POST',

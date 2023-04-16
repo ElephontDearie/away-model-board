@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { fetchSprints } from "../handlers/sprint";
 
 function SprintView () {
-    // const { user, isAdmin } = useAuthContext();
     const [sprints, setSprints] = useState<Sprint[]>();
 
     useEffect(() => {
@@ -19,11 +18,10 @@ function SprintView () {
     }, [sprints]);
     
     return (
-        <>
-            <section>
-                <ShowSprintList sprints={sprints} />
-            </section>
-        </>
+        <section>
+            <ShowSprintList sprints={sprints} />
+        </section>
+        
     )
 }
 

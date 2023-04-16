@@ -1,11 +1,14 @@
-.taskTitleConfirm {
+/* Purple background for task title on confirm */
+.task-title-confirm {
     background: purple;
     color: white;
     border-radius: 30px;
     text-align: center;
     margin-top: 15px;
 }
-.crudError {
+
+/* Red background for error components */
+.crud-error {
     background: red;
     color: white;
 }

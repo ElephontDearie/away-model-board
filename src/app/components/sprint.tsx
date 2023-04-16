@@ -5,10 +5,10 @@ import { ErrorModal, SuccessModal } from "./userInfo";
 import { Badge, Button, Form, ListGroup, ListGroupItem, Modal, Overlay, OverlayTrigger, Tooltip, TooltipProps } from "react-bootstrap";
 import { createSprint, fetchSprints, updateSprint } from "../handlers/sprint";
 import { Sprint } from "@prisma/client";
-import "../sass/header.scss";
-import "../sass/board.scss";
 import { useRouter } from "next/navigation";
 import { LoadingPage } from "./load";
+import "../sass/header.scss";
+import "../sass/board.scss";
 
 
 export enum SprintStatus {
@@ -162,10 +162,6 @@ export const SprintView = () => {
                 activeSprint && setActiveSprint(activeSprint);
                 activeSprint && router.push(`/sprint/${activeSprint.id}`);
             }
-            // setSprints(sprints)
-            // const activeSprint = sprints && sprints.find(s => s.status == SprintStatus[SprintStatus["Active"]]);
-            // activeSprint && setActiveSprint(activeSprint);
-            
 
             activeSprint && router.push(`/sprint/${activeSprint.id}`);
             setLoading(false);
@@ -187,7 +183,7 @@ export const SprintView = () => {
 }
 
 export const CreateSprintButton = () => {
-    const {user, isAdmin} = useAuthContext();
+    const { user } = useAuthContext();
     const [showModal, setShowModal] = useState<boolean>(false);
     return (
         <>

@@ -1,11 +1,8 @@
 'use client';
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
-    onAuthStateChanged,
     getAuth,
     User,
-    signOut,
     IdTokenResult,
 } from 'firebase/auth';
 import firebase_app from '../firebase/firebase_config'
@@ -22,8 +19,6 @@ type GivenContext = {
     refreshedIdToken: IdTokenResult | undefined;
 }
 
-// export const AuthContext = createContext({});
-// export const AuthContext = createContext<User | null>(null);
 export const AuthContext = createContext<GivenContext>({
     user: null,
     isAdmin: false,
@@ -35,8 +30,6 @@ export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({children}: Props) => {
     const [user, setUser] = useState<User | null>(null);
-    // const [isAdmin, setIsAdmin] = useState<boolean>(false);
-    // const [idToken, setIdToken] = useState<IdTokenResult | undefined>(undefined);
     const [givenContext, setGivenContext] = useState<GivenContext>({
         user: null,
         isAdmin: false,

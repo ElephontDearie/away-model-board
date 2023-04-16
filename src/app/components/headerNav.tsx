@@ -18,7 +18,7 @@ export const SprintList = () => {
         const fetchData = async () => {
             const response = await fetchSprints();
             const sprints: Sprint[] = await response.json();
-            
+
             if (response.status == 500) {
                 if (typeof sprints == "string") {
                     setHasError(true);

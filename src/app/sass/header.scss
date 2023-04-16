@@ -1,14 +1,17 @@
+/* Display right */
 .user-authorised {
     float: right;
     margin-right: 0;
 }
 
+/* Round edges, pad border, and white text colour */
 .backlog-route {
     border-radius: 50px;
     border: 50px;
     color: white;
 }
 
+/* Green-yellow element colour which switches to white on hover */
 .sign-up {
     background: greenyellow;
     &:hover {

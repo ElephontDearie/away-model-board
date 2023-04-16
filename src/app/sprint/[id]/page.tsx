@@ -2,8 +2,6 @@
 import { useEffect, useState } from 'react';
 import { TaskItem, TaskStatus } from '../../components/task';
 import { AddTaskForm } from '../../components/createTask';
-
-import "../../sass/task.scss";
 import { updateTask } from '../../handlers/task';
 import { useAuthContext } from '../../context/AuthContext';
 import { fetchSprintWithId, fetchSprints } from '../../handlers/sprint';
@@ -11,7 +9,6 @@ import { CompleteSprint } from '../../api/sprints/[id]/route';
 import { Sprint, Task } from '@prisma/client';
 import { SprintBannerOnBoard, SprintStatus } from '../../components/sprint';
 import { LoadingPage } from '@/app/components/load';
-
 
 
 function isColString(col: TaskStatus | string): col is string {
