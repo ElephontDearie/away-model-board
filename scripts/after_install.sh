@@ -1,2 +1,2 @@
 #!/bin/bash
-rm -rf /opt/codedeploy-agent/deployment-root
+sudo rm -rf /opt/codedeploy-agent/deployment-root
