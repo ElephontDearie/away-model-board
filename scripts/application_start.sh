@@ -18,8 +18,9 @@ else
 fi
 
 node -v
-whoami
 sudo chown -R ${USER} /home/ubuntu/away-model-board
+rm -rf node_modules yarn.lock
+
 git pull origin main
 yarn install
 
