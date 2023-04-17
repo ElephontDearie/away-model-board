@@ -1,3 +1,4 @@
+import { CreateTaskArgs } from "../components/createTask";
 import { Editable } from "../components/task";
 
 // Retrieve all tasks
@@ -47,4 +48,15 @@ export const deleteTask = async (taskId: number): Promise<Response> => {
             id: taskId
         })
     });
+}
+
+// Create a task
+export const createTask = async (pendingTask: CreateTaskArgs): Promise<Response> => {
+    return await fetch('/api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pendingTask),
+      });
 }

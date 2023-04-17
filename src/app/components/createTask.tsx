@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TaskStatus } from "./task";
 import { ErrorModal, SuccessModal } from "./userInfo";
 import { Button, Form } from "react-bootstrap";
+import { createTask } from "../handlers/task";
 
 export interface CreateTaskArgs extends AddTaskProps {
   title: string;
@@ -9,12 +10,10 @@ export interface CreateTaskArgs extends AddTaskProps {
   status: string;
 }
 
-
 type AddTaskProps = {
   authorId: string;
   sprintId?: number;
 }
-
 
 export const AddTaskForm = (props: AddTaskProps) => {
   const [showError, setShowError] = useState<boolean>(false);
@@ -42,13 +41,7 @@ export const AddTaskForm = (props: AddTaskProps) => {
       pendingTask = {...pendingTask, sprintId}
     } 
 
-    const res = await fetch('/api/tasks', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(pendingTask),
-    });
+    const res = await createTask(pendingTask);
 
       if (res.status == 500) {
         const errorMessage = await res.json();
