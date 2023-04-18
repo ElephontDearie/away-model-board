@@ -31,7 +31,6 @@ fi
 
 echo "Beginning yarn build"
 yarn build
-yarn cy:run
 
 if hash pm2 2>dev.null; then echo "pm2 exists"; else yarn global add pm2; fi
 
