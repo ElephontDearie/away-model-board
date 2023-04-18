@@ -35,13 +35,6 @@ export const AuthContextProvider = ({children}: Props) => {
         isAdmin: false,
         refreshedIdToken: undefined
     })
-    // const [loading, setLoading] = useState<boolean>(true);
-
-    // const logout = async () => {
-    //     await signOut(auth);
-    //     setUser(null);
-    // };
-    
     
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async authUser => {
@@ -60,7 +53,6 @@ export const AuthContextProvider = ({children}: Props) => {
     return (
         <AuthContext.Provider value={givenContext}>
             {children}
-            {/* {loading ? <div>Loading...</div> : children} */}
         </AuthContext.Provider>
     );
 };

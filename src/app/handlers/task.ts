@@ -50,7 +50,7 @@ export const deleteTask = async (taskId: number): Promise<Response> => {
     });
 }
 
-// Create a task
+// Create a new task
 export const createTask = async (pendingTask: CreateTaskArgs): Promise<Response> => {
     return await fetch('/api/tasks', {
         method: 'POST',

@@ -25,14 +25,38 @@ export type InputTask = {
 }
 
 
-type taskOptions = {
-    peerTeam: boolean,
+type TaskOptions = {
     task: Task,
     setDraggedIssue: Dispatch<SetStateAction<Task | null>>,
     isAdmin: boolean
 }
 
-export const TaskItem = (props: taskOptions): JSX.Element => {
+export type Editable  = {
+    title: string;
+    description: string;
+}
+const editableFields = (task: InputTask): Editable => ({
+    title: task.title,
+    description: task.description,
+})
+
+// TODO: Add taskId, sprint titles of sprints the task has been in, author, created date, and updated date.
+type Displayable = {
+    status: string;
+}
+
+// TODO: Add taskId, sprint titles of sprints the task has been in, author, created date, and updated date.
+const readableFields = (task: InputTask): Displayable => ({
+    status: task.status.toString(),
+})
+
+type EditProps = {
+    task: InputTask; 
+    showModal: boolean; 
+    setShowModal: Dispatch<SetStateAction<boolean>>;
+}
+
+export const TaskItem = (props: TaskOptions): JSX.Element => {
     const [showEditModal, setShowEditModal] = useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const {task, isAdmin} = props;
@@ -69,31 +93,6 @@ export const TaskItem = (props: taskOptions): JSX.Element => {
     )
 }
 
-
-export type Editable  = {
-    title: string;
-    description: string;
-}
-const editableFields = (task: InputTask): Editable => ({
-    title: task.title,
-    description: task.description,
-})
-
-// TODO: Add taskId, sprint titles of sprints the task has been in, author, created date, and updated date.
-type Displayable = {
-    status: string;
-}
-
-// TODO: Add taskId, sprint titles of sprints the task has been in, author, created date, and updated date.
-const readableFields = (task: InputTask): Displayable => ({
-    status: task.status.toString(),
-})
-
-type EditProps = {
-    task: InputTask; 
-    showModal: boolean; 
-    setShowModal: Dispatch<SetStateAction<boolean>>;
-}
 export const EditModal = (props: EditProps): JSX.Element => {
     const { task, showModal, setShowModal } = props;
     const fields: Editable = editableFields(task);
