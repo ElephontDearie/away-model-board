@@ -4,7 +4,7 @@ import { Task } from '@prisma/client'
 
 
 
-const initTaskItemWrapper = () => {
+const wrappedTaskItem = () => {
     const testTask: Task = {
         id: 100,
         sprintId: 10,
@@ -14,7 +14,7 @@ const initTaskItemWrapper = () => {
         authorId: 'tester'
       }
       
-    const AuthModalWrapper = (props: {
+    const TaskItemWrapper = (props: {
         isAdmin: boolean
     }) => {
         const [draggedIssue, setDraggedIssue] = useState<Task | null>(null);
@@ -22,12 +22,12 @@ const initTaskItemWrapper = () => {
             setDraggedIssue={setDraggedIssue} 
             isAdmin={props.isAdmin || false} />
     }
-    return AuthModalWrapper
+    return TaskItemWrapper
 }
 
 describe('<TaskItem />', () => {
     it('should render the Task componenet with correct content', () => {
-        const TaskWrapper = initTaskItemWrapper()
+        const TaskWrapper = wrappedTaskItem()
         cy.mount(<TaskWrapper isAdmin={false}/>)
         cy.get('.card-title').should('have.text', '#100test-task')
         cy.get('.card-subtitle').should('have.text', 'test-task description')
@@ -37,7 +37,7 @@ describe('<TaskItem />', () => {
     })
 
     it('should render the Task componenet with correct content when admin user', () => {
-        const TaskWrapper = initTaskItemWrapper()
+        const TaskWrapper = wrappedTaskItem()
         cy.mount(<TaskWrapper isAdmin={true}/>)
         cy.get('.card-title').should('have.text', '#100test-task')
         cy.get('.card-subtitle').should('have.text', 'test-task description')

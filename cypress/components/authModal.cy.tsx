@@ -1,21 +1,20 @@
 import React, { useState } from 'react'
 import { AuthModal } from '@/app/components/auth'
 
-const initAuthModalWrapper = () => {
-    const setShowModal = cy.spy();
+const wrappedAuthModal = () => {
     const AuthModalWrapper = (givenInput: {givenInput: boolean}) => {
         const [showModal, setShowModal] = useState(true);
         return <AuthModal showModal={showModal} setShowModal={setShowModal} isRegister={givenInput.givenInput}
             />
     }
-    return [setShowModal, AuthModalWrapper]
+    return AuthModalWrapper
 }
 
 
 describe('<AuthModal />', () => {
 
   it('should mount with wrapper to render with AuthModal content when registering', () => {
-    const [setShowModal, AuthModalWrapper] = initAuthModalWrapper();
+    const AuthModalWrapper = wrappedAuthModal();
     cy.mount(<AuthModalWrapper givenInput={true}/>)
 
     cy.get('.modal-title').should('have.text', 'Sign Up')
@@ -29,7 +28,7 @@ describe('<AuthModal />', () => {
   })
 
   it('should mount with wrapper to render with AuthModal content when logging in', () => {
-    const [setShowModal, AuthModalWrapper] = initAuthModalWrapper();
+    const AuthModalWrapper = wrappedAuthModal();
     cy.mount(<AuthModalWrapper givenInput={false}/>)
 
     cy.get('.modal-title').should('have.text', 'Login')
