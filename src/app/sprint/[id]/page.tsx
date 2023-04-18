@@ -54,7 +54,7 @@ function Board({params}: {params: {id: string}}) {
     const renderColItems = (col: string) => {
         return shownTasks && shownTasks.filter(t => t.status.toString() == col)
         .map(t => 
-        <TaskItem key={t.id} peerTeam task={t} setDraggedIssue={setDraggedIssue} isAdmin={isAdmin}/>); 
+        <TaskItem key={t.id} task={t} setDraggedIssue={setDraggedIssue} isAdmin={isAdmin}/>); 
         
     } 
 
