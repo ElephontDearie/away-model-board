@@ -1,9 +1,9 @@
 version: 0.2
 
 env:
-variables: 
-   IMAGE_TAG: "latest"
-   IMAGE_REPO_NAME: "992382626730.dkr.ecr.us-east-1.amazonaws.com/away-tracker"
+  variables: 
+    IMAGE_TAG: "latest"
+    IMAGE_REPO_NAME: "992382626730.dkr.ecr.us-east-1.amazonaws.com/away-tracker"
 
 phases: 
   pre_build:
@@ -20,7 +20,8 @@ phases:
       - echo Pushing the Docker image...
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG
       - docker push $IMAGE_REPO_NAME:$IMAGE_TAG
-      - printf '[{"name":"image-name","imageUri":"%s"}]' 992382626730.dkr.ecr.us-east-1.amazonaws.com/away-tracker:latest > i artifacts:
+      - printf '[{"name":"image-name","imageUri":"%s"}]' 992382626730.dkr.ecr.us-east-1.amazonaws.com/away-tracker:latest > $CODEBUILD_SRC_DIR/imagedefinitions.json
+artifacts:
   files:
   -    imagedefinitions.json
   -    appspec.yml
