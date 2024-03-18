@@ -11,10 +11,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-if [[ $(nvm ls | grep v18.15.0) == "" ]]; then
-    nvm install v18.15.0
+if [[ $(nvm ls | grep v18.17.0) == "" ]]; then
+    nvm install v18.17.0
 else
-    nvm use v18.15.0
+    nvm use v18.17.0
 fi
 
 node -v

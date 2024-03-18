@@ -51,3 +51,11 @@ Restore pm2 instances on reboot
 sudo service codedeploy-agent status
 ### start service if not running
 sudo service codedeploy-agent start
+
+
+## Docker
+
+```bash
+docker build -t away-tracker .  
+docker run -p 3000:3000 away-tracker
+```

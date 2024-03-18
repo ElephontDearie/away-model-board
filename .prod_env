@@ -4,6 +4,5 @@
 # Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
 # See the documentation for all the connection string options: https://pris.ly/d/connection-strings
 
-# DATABASE_URL="file:./dev.db"
-DATABASE_URL="file:/app/prisma/dev.db"
+DATABASE_URL="file:/app/dev.db"
 NEXT_PUBLIC_SERVICE_ACCOUNT_CONFIG_PATH="../../../../board-5ed22-firebase-adminsdk-zkrqy-118a432926.json"
