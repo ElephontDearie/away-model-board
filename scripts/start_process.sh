@@ -20,4 +20,4 @@ docker image tag 992382626730.dkr.ecr.us-east-1.amazonaws.com/away-tracker:lates
 docker rm -f $container_name
 
 #Creating and starting a docker container using a new image
-docker run -d -p 80:80 --name $container_name $container_name:latest
+docker run -d -p 443:443 -p 80:80 --name $container_name $container_name:latest
