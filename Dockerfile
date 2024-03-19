@@ -68,9 +68,9 @@ COPY --from=deps --chown=nextjs:nodejs /app/prisma ./prisma/
 
 USER nextjs
 
-EXPOSE 443 80
+EXPOSE 3000
 
-ENV PORT 443 80
+ENV PORT 3000
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 
