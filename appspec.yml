@@ -4,4 +4,3 @@ hooks:
   ApplicationStart:
     - location: scripts/start_process.sh
       timeout: 900
-      runas: ubuntu
