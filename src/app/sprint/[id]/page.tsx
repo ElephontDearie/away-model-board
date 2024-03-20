@@ -9,6 +9,7 @@ import { CompleteSprint } from '../../api/sprints/[id]/route';
 import { Sprint, Task } from '@prisma/client';
 import { SprintBannerOnBoard, SprintStatus } from '../../components/sprint';
 import { LoadingPage } from '@/app/components/load';
+import { useRouter } from "next/navigation";
 
 
 function isColString(col: TaskStatus | string): col is string {
@@ -25,6 +26,7 @@ function Board({params}: {params: {id: string}}) {
     const [sprint, setSprint] = useState<Sprint | null> (null);
     const [activeSprintExists, setActiveSprintExists] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+    const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,6 +77,7 @@ function Board({params}: {params: {id: string}}) {
     };
     return (
         <>
+            {!user && router.push("/")}
             {loading && <LoadingPage />}
             {!loading && <div>
                 {sprint && <SprintBannerOnBoard sprint={sprint} activeSprintExists={activeSprintExists} />}

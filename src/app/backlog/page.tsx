@@ -10,6 +10,8 @@ import { SprintStatus } from "../components/sprint";
 import { fetchSprints } from "../handlers/sprint";
 import { ErrorModal, Outcome, SuccessModal } from "../components/userInfo";
 import { LoadingPage } from "../components/load";
+import { useRouter } from "next/navigation";
+
 
 export default function Backlog() {
     const {user, isAdmin} = useAuthContext()
@@ -20,7 +22,7 @@ export default function Backlog() {
     const [activeSprintId, setActiveSprintId] = useState<number>();
     const [outcome, setOutcome] = useState<{taskId: number, result: Outcome, message: string}>()
     const [showMessage, setShowMessage] = useState<boolean>(false);
-
+    const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,7 +43,7 @@ export default function Backlog() {
         fetchData().catch(error => console.log(error));
         setActive().catch(error => console.log(error));
         setLoading(false);
-      }, [tasks, activeSprintExists]);
+      }, [tasks, activeSprintExists, user]);
 
       const activeSprintHasTask = (taskSprintId: number | null): boolean => activeSprintId == taskSprintId;
 
@@ -62,6 +64,7 @@ export default function Backlog() {
 
     return (
         <>
+            {!user && router.push("/")}
             {loading && <LoadingPage />}
             {!loading && <main>
                 <h1 className={"text-center mt-3"}>Backlog</h1>

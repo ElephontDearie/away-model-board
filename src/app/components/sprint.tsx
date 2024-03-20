@@ -173,6 +173,7 @@ export const SprintView = () => {
     
     return (
         <>
+            {!user && router.push("/")}
             {loading && <LoadingPage />}
             {!activeSprint && !loading && (
                 <ShowSprintList sprints={sprints} />

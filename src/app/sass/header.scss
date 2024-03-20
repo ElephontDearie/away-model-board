@@ -20,4 +20,8 @@
     }
 }
 
+.disable-link {
+    pointer-events: none
+}
+
 @import "bootstrap/dist/css/bootstrap.min.css"
