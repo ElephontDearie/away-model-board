@@ -36,6 +36,8 @@ const authoriseUser = async(email: string, password: string,
     setShowModal: Dispatch<SetStateAction<boolean>>,
     username: string,
      ) => {
+    
+    const safeErrorMessage = "Incorrect login details. Please try again.";
     try {
         const auth = getAuth(firebase_app)
         const credentials = isRegister ? 
@@ -71,13 +73,13 @@ const authoriseUser = async(email: string, password: string,
           } else if (isRegister) {
             setError('Email address is invalid.')
           } else  {
-            setError('Please sign up to create a new account.')
+            setError(safeErrorMessage)
           }
           
         } else if (error.code == 'auth/wrong-password') {
-          setError('Incorrect login details. Please try again.')
+          setError(safeErrorMessage)
         } else if (error.code == 'auth/user-not-found') {
-          setError('Please sign up to create a new account.')
+          setError(safeErrorMessage)
         }
 
     }
