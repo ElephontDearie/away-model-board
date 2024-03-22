@@ -1,4 +1,5 @@
 "use client";
+import "../sass/header.scss"
 import { Button, Dropdown } from "react-bootstrap"
 import Image from "next/image";
 import Link from "next/link";
@@ -58,12 +59,11 @@ export const SprintList = () => {
 export const BacklogNavigation = () => {
     const { user } = useAuthContext();
     return (
-        <Link href="/backlog" passHref>
+        <Link href="/backlog" passHref className={!user ? "disable-link" : ''} aria-disabled={!user} tabIndex={!user ? -1 : undefined}>
             <Button disabled={!user}>
                 Backlog
             </Button> 
         </Link>
-        
     )
 }
 
