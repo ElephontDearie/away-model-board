@@ -105,7 +105,7 @@ const SingleSprintBanner = ({sprint}: {sprint: Sprint}) => {
         }
     }
     return (
-        <ListGroupItem key={sprint.id} className={"flex-fill clickable " + getBannerColour()} onClick={() => router.push(`sprint/${sprint.id}`)}>
+        <ListGroupItem key={sprint.id} className={"flex-fill clickable " + getBannerColour()} onClick={() => router.push(`/sprint/${sprint.id}`)}>
             <span className={"me-5 align-items-center"}>{sprint.title}</span>
             <Badge className={statusColour(sprint.status) + " me-5 align-items-center"}>{sprint.status}</Badge>
         </ListGroupItem>

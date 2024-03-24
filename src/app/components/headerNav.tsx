@@ -44,12 +44,11 @@ export const SprintList = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-                <Dropdown.Item href="/sprint">See extended sprint detail</Dropdown.Item>
+                <Dropdown.Item>See extended sprint detail</Dropdown.Item>
                 {sprints && sprints.map(sprint => 
-                        <Dropdown.Item href={`/sprint/${sprint.id}`} key={sprint.id}>
-                            <SprintBanner sprint={sprint}/>
-                        </Dropdown.Item>
-
+                    <Dropdown.Item key={sprint.id}>
+                        <SprintBanner sprint={sprint} key={sprint.id}/>
+                    </Dropdown.Item>
                 )}
             </Dropdown.Menu>
         </Dropdown>
